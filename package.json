@@ -28,6 +28,7 @@
 		"vite": "^7.1.10"
 	},
 	"dependencies": {
+		"@lucide/svelte": "^0.552.0",
 		"@supabase/supabase-js": "^2.78.0",
 		"bcrypt": "^6.0.0",
 		"jsonwebtoken": "^9.0.2"
