@@ -1,30 +1,24 @@
-// src/lib/cms.ts
 // Client-side SDK for your /api/v2/app endpoints using cookie-based JWT auth.
 
 export class CMSClient {
 	private base: string;
-
 	constructor(base = '/api/v2/app') {
 		this.base = base;
 	}
 
 	// -----------------------------------------------------------------------
-	//  AUTH SECTION (uses cookie session_token)
+	//  AUTH SECTION
 	// -----------------------------------------------------------------------
 	Auth = {
 		login: async (email: string, password: string) => {
-			// This will set the session_token cookie on the response
 			const res = await fetch(`${this.base}/auth/login`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ email, password }),
 				credentials: 'include'
 			});
-
-			// The backend should handle redirect or JSON response
 			const data = await res.json().catch(() => ({}));
 			if (!res.ok) throw new Error(data.error || 'Login failed');
-
 			return data;
 		},
 
@@ -68,6 +62,72 @@ export class CMSClient {
 			const data = await res.json();
 			if (!res.ok) return { data: null, error: data.error };
 			return { data: data.data, error: null };
+		},
+
+		delete: async (site_id: string) => {
+			const res = await fetch(`${this.base}/sites/${site_id}`, {
+				method: 'DELETE',
+				credentials: 'include'
+			});
+			const data = await res.json();
+			if (!res.ok) return { error: data.error };
+			return { error: null };
+		},
+		get: async (site_id: string) => {
+			const res = await fetch(`${this.base}/sites/${site_id}`, {
+				credentials: 'include'
+			});
+			const data = await res.json();
+			if (!res.ok) return { data: null, error: data.error };
+			return { data: data.data, error: null };
+		},
+
+		update: async (site_id: string, updates: any) => {
+			const res = await fetch(`${this.base}/sites/${site_id}`, {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(updates),
+				credentials: 'include'
+			});
+			const data = await res.json();
+			if (!res.ok) return { data: null, error: data.error };
+			return { data: data.data, error: null };
+		},
+
+		// -------------------------------------------------------------------
+		//  SITE ANALYTICS (single-site level)
+		// -------------------------------------------------------------------
+		analytics: async (site_id: string) => {
+			const res = await fetch(`${this.base}/sites/${site_id}/analytics`, {
+				credentials: 'include'
+			});
+			const data = await res.json();
+			if (!res.ok) return { data: null, error: data.error };
+			return { data: data.data, error: null };
+		}
+	};
+
+	// -----------------------------------------------------------------------
+	//  TOKENS SECTION
+	// -----------------------------------------------------------------------
+	Tokens = {
+		get: async (site_id: string) => {
+			const res = await fetch(`${this.base}/sites/${site_id}/token`, {
+				credentials: 'include'
+			});
+			const data = await res.json();
+			if (!res.ok) return { data: null, error: data.error };
+			return { data: data.data, error: null };
+		},
+
+		rotate: async (site_id: string) => {
+			const res = await fetch(`${this.base}/sites/${site_id}/token/rotate`, {
+				method: 'POST',
+				credentials: 'include'
+			});
+			const data = await res.json();
+			if (!res.ok) return { data: null, error: data.error };
+			return { data: data.data, error: null };
 		}
 	};
 
@@ -85,9 +145,10 @@ export class CMSClient {
 		},
 
 		get: async (site_id: string, name: string) => {
-			const res = await fetch(`${this.base}/sites/${site_id}/content/${encodeURIComponent(name)}`, {
-				credentials: 'include'
-			});
+			const res = await fetch(
+				`${this.base}/sites/${site_id}/content/${encodeURIComponent(name)}`,
+				{ credentials: 'include' }
+			);
 			const data = await res.json();
 			if (!res.ok) return { data: null, error: data.error };
 			return { data: data.data, error: null };
@@ -112,10 +173,40 @@ export class CMSClient {
 		},
 
 		update: async (site_id: string, name: string, updates: any) => {
-			const res = await fetch(`${this.base}/sites/${site_id}/content/${encodeURIComponent(name)}`, {
-				method: 'PATCH',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(updates),
+			const res = await fetch(
+				`${this.base}/sites/${site_id}/content/${encodeURIComponent(name)}`,
+				{
+					method: 'PATCH',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(updates),
+					credentials: 'include'
+				}
+			);
+			const data = await res.json();
+			if (!res.ok) return { data: null, error: data.error };
+			return { data: data.data, error: null };
+		},
+
+		remove: async (site_id: string, name: string) => {
+			const res = await fetch(
+				`${this.base}/sites/${site_id}/content/${encodeURIComponent(name)}`,
+				{
+					method: 'DELETE',
+					credentials: 'include'
+				}
+			);
+			const data = await res.json();
+			if (!res.ok) return { success: false, error: data.error };
+			return { success: true, error: null };
+		}
+	};
+
+	// -----------------------------------------------------------------------
+	//  COMPANY SECTION
+	// -----------------------------------------------------------------------
+	Company = {
+		get: async () => {
+			const res = await fetch(`${this.base}/companies/id`, {
 				credentials: 'include'
 			});
 			const data = await res.json();
@@ -123,14 +214,25 @@ export class CMSClient {
 			return { data: data.data, error: null };
 		},
 
-		remove: async (site_id: string, name: string) => {
-			const res = await fetch(`${this.base}/sites/${site_id}/content/${encodeURIComponent(name)}`, {
-				method: 'DELETE',
-				credentials: 'include'
-			});
-			const data = await res.json();
-			if (!res.ok) return { success: false, error: data.error };
-			return { success: true, error: null };
+		// -------------------------------------------------------------------
+		//  COMPANY ANALYTICS (aggregates all site analytics)
+		// -------------------------------------------------------------------
+		analytics: async () => {
+			const { data: sites, error } = await CMS.Sites.list();
+			if (error) return { data: null, error };
+
+			const analyticsResults = [];
+			for (const site of sites) {
+				const { data: siteAnalytics, error: siteError } = await CMS.Sites.analytics(site.id);
+				if (siteError) continue;
+				analyticsResults.push({
+					site_id: site.id,
+					domain: site.domain,
+					...siteAnalytics
+				});
+			}
+
+			return { data: analyticsResults, error: null };
 		}
 	};
 }

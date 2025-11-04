@@ -3,30 +3,31 @@ import { ok, fail } from '$lib/server/http';
 import { HttpError } from '$lib/server/auth';
 import type { RequestHandler } from './$types';
 
+// Only receive your own companies data
 export const GET: RequestHandler = withUserAuth(async ({ auth, supabase, request, params }) => {
-  const { id } = params;
-  if (auth.company_id !== id) throw new HttpError(403, 'Forbidden');
+  if (!auth) throw new HttpError(403, 'Forbidden');
 
   const { data, error } = await supabase
     .from('companies')
     .select('*')
-    .eq('id', id)
+    .eq('id', auth.company_id)
     .single();
 
   if (error) return fail(404, 'Company not found', error);
   return ok(data);
 });
 
+// only be able to patch you company data
 export const PATCH: RequestHandler = withUserAuth(async ({ auth, supabase, request , params }) => {
   const { id } = params;
-  if (auth.company_id !== id || auth.role !== 'owner')
+  if (!auth || auth.role !== 'owner')
     throw new HttpError(403, 'Forbidden');
 
   const body = await request.json();
   const { data, error } = await supabase
     .from('companies')
     .update(body)
-    .eq('id', id)
+    .eq('id', auth.company_id)
     .select('*')
     .single();
 

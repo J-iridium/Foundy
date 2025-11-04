@@ -1,25 +1,34 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { selectedSite } from '$lib/stores/site';
+	import { CMS } from '$lib/cms';
 	import Card from '$lib/components/StatsCard.svelte';
 	import LineChart from '$lib/components/LineChart.svelte';
 	import BarChart from '$lib/components/BarChart.svelte';
-	import { CMS } from '$lib/cms';
 	import { Toast, createToaster } from '@skeletonlabs/skeleton-svelte';
 	import { CheckCircle2, AlertTriangle } from '@lucide/svelte';
 
 	const toaster = createToaster({});
-
-	let analytics = [];
+	let analytics = null;
 	let loading = true;
 
-	// Aggregate stats for company dashboard
 	let totalVisitors = 0;
 	let totalPageViews = 0;
 	let avgSessionDuration = 0;
-	let totalDiskUsage = 0;
+	let diskUsage = 0;
 
+	// load analytics for current site
 	onMount(async () => {
-		const { data, error } = await CMS.Company.analytics();
+		if (!$selectedSite) {
+			toaster.warning({
+				title: 'No site selected',
+				description: 'Please select a site first.'
+			});
+			loading = false;
+			return;
+		}
+
+		const { data, error } = await CMS.Sites.analytics($selectedSite);
 
 		if (error) {
 			toaster.warning({
@@ -31,64 +40,52 @@
 		}
 
 		analytics = data;
-        console.log(data)
 		calculateMetrics();
 		loading = false;
 	});
 
 	function calculateMetrics() {
-		if (!analytics || analytics.length === 0) return;
+		if (!analytics) return;
 
-		let totalDuration = 0;
-		let totalSitesWithDuration = 0;
-
-		for (const site of analytics) {
-			totalVisitors += site.unique_visitors ?? 0;
-			totalPageViews += site.views ?? 0;
-			totalDiskUsage += site.disk_usage ?? 0;
-			if (site.retention) {
-				totalDuration += site.retention;
-				totalSitesWithDuration++;
-			}
-		}
-
-		avgSessionDuration =
-			totalSitesWithDuration > 0
-				? Math.round(totalDuration / totalSitesWithDuration)
-				: 0;
+		totalVisitors = analytics.unique_visitors ?? 0;
+		totalPageViews = analytics.views ?? 0;
+		avgSessionDuration = analytics.retention ?? 0;
+		diskUsage = analytics.disk_usage ?? 0;
 	}
 </script>
 
 <div class="p-6 space-y-6">
 	<!-- Header -->
 	<div>
-		<h1 class="text-2xl font-semibold text-on-surface">Company Analytics</h1>
+		<h1 class="text-2xl font-semibold text-on-surface">Site Analytics</h1>
 		<p class="text-sm text-surface-400 mt-1">
-			Overview of usage and performance across all sites.
+			Usage and performance for your selected site.
 		</p>
 	</div>
 
 	{#if loading}
 		<p class="text-surface-400 italic">Loading analytics...</p>
+	{:else if !analytics}
+		<p class="text-surface-400 italic">No analytics data available.</p>
 	{:else}
-		<!-- Metric Cards -->
+		<!-- Stats Cards -->
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 			<Card
-				title="Total Visitors"
+				title="Visitors"
 				value={totalVisitors.toLocaleString()}
-				change="5%"
+				change="4%"
 				positive={true}
 			/>
 			<Card
-				title="Total Page Views"
+				title="Page Views"
 				value={totalPageViews.toLocaleString()}
-				change="3%"
+				change="2%"
 				positive={true}
 			/>
 			<Card
 				title="Avg. Session Duration"
-				value={`${avgSessionDuration} sec`}
-				change="-1%"
+				value={`${avgSessionDuration}s`}
+				change="1%"
 				positive={false}
 			/>
 		</div>
@@ -98,7 +95,6 @@
 			<h2 class="text-lg font-semibold mb-4 text-on-surface">
 				Usage Overview
 			</h2>
-
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 				<LineChart
 					title="Visitors Over Time"
@@ -106,8 +102,8 @@
 					{analytics}
 				/>
 				<BarChart
-					title="Page Views by Site"
-					description="Company-wide"
+					title="Page Views"
+					description="Daily breakdown"
 					{analytics}
 				/>
 			</div>

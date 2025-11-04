@@ -5,30 +5,57 @@ import jwt from 'jsonwebtoken';
 import { SUPABASE_JWT_SECRET } from '$env/static/private';
 import type { RequestHandler } from './$types';
 
-export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, request, params }) => {
-  const { id } = params;
-  if (auth.role !== 'owner')
-    throw new HttpError(403, 'Only owner can rotate tokens');
+export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, params }) => {
+	const { id: site_id } = params;
 
-  const { data: site, error } = await supabase
-    .from('sites')
-    .select('id, domain, company_id')
-    .eq('id', id)
-    .eq('company_id', auth.company_id)
-    .single();
+	if (auth.role !== 'owner')
+		throw new HttpError(403, 'Only the owner can rotate tokens.');
 
-  if (error || !site) return fail(404, 'Site not found', error);
+	// Fetch latest site info
+	const { data: site, error: siteError } = await supabase
+		.from('sites')
+		.select('id, domain, company_id')
+		.eq('id', site_id)
+		.eq('company_id', auth.company_id)
+		.single();
 
-  const token = jwt.sign(
-    {
-      company_id: site.company_id,
-      site_id: site.id,
-      domain: site.domain,
-      permissions: ['read:content', 'write:content'],
-    },
-    SUPABASE_JWT_SECRET!,
-    { expiresIn: '30d' }
-  );
+	if (siteError || !site) return fail(404, 'Site not found', siteError);
 
-  return ok({ token, rotated: true });
+	// Generate new JWT
+	const token = jwt.sign(
+		{
+			company_id: site.company_id,
+			site_id: site.id,
+			domain: site.domain,
+			permissions: ['read:content']
+		},
+		SUPABASE_JWT_SECRET!,
+		{ expiresIn: '365d' }
+	);
+
+	// Upsert into site_tokens table
+	const { data: updated, error: updateError } = await supabase
+		.from('site_tokens')
+		.upsert(
+			{
+				site_id: site.id,
+				company_id: site.company_id,
+				domain: site.domain,
+				jwt_token: token,
+				rotated_at: new Date().toISOString()
+			},
+			{ onConflict: 'site_id' }
+		)
+		.select()
+		.single();
+
+	if (updateError) return fail(400, 'Failed to store new token', updateError);
+
+	return ok({
+		token,
+		rotated: true,
+		site_id: site.id,
+		domain: site.domain,
+		company_id: site.company_id
+	});
 });

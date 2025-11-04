@@ -10,25 +10,42 @@ export const GET: RequestHandler = withUserAuth(async ({ auth, supabase, request
   if (auth.role !== 'owner')
     throw new HttpError(403, 'Only owner can view site token');
 
-  const { data: site, error } = await supabase
-    .from('sites')
-    .select('id, domain, company_id')
-    .eq('id', id)
-    .eq('company_id', auth.company_id)
+  const { data: token, error } = await supabase
+    .from('site_tokens')
+    .select('id, site_id, token, revoked')
+    .eq('site_id', id)
     .single();
 
-  if (error || !site) return fail(404, 'Site not found', error);
+  if (error || !token) return fail(404, 'Site not found', error);
 
-  const token = jwt.sign(
-    {
-      company_id: site.company_id,
-      site_id: site.id,
-      domain: site.domain,
-      permissions: ['read:content', 'write:content'],
-    },
-    SUPABASE_JWT_SECRET!,
-    { expiresIn: '30d' }
-  );
+  // console.log(token)
 
   return ok({ token });
+});
+
+
+export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, params }) => {
+  const { id } = params;
+  if (auth.role !== 'owner')
+    throw new HttpError(403, 'Only owner can create site token');
+
+  // Generate JWT
+  const token = jwt.sign(
+    {
+      site_id: id,
+      permissions: ['read:content'],
+    },
+    SUPABASE_JWT_SECRET!,
+    { expiresIn: '365d' }
+  );
+
+  const { data, error } = await supabase
+    .from('site_tokens')
+    .insert({ site_id: id, token })
+    .select()
+    .single();
+
+  if (error) return fail(500, 'Failed to create site token', error);
+
+  return ok({ token: data });
 });
