@@ -72,7 +72,7 @@
 			</p>
 		</div>
 	</div>
-    <div class="p-3 space-y-6">
+    <div class="p-3 space-y-6 overflow-y-auto">
 	{#if loading}
 		<p class="text-surface-400 italic">Loading analytics...</p>
 	{:else}

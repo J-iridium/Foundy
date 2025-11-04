@@ -232,7 +232,7 @@
   </Navigation.Footer>
 </Navigation>
     <!-- --- -->
-    <div class="flex flex-col m-4 rounded-lg overflow-hidden">
+    <div class="flex flex-col m-4 rounded-lg overflow-x-hidden overflow-y-hidden">
 		  {@render children()}
       <!-- <p class="opacity-50">Contents</p> -->
     </div>
