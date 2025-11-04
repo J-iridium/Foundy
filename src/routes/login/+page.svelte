@@ -24,7 +24,7 @@
 		}else {
 			(data)
 
-			goto('/dashboard');
+			goto('/dashboard/company/analytics');
 		}
 
 

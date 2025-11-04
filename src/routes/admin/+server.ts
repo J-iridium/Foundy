@@ -14,11 +14,11 @@ export const POST = async ({ request }) => {
 			return json({ error: 'Missing required fields' }, { status: 400 });
 		}
 
-		// 1️⃣ Create company + default site + token
+		// 1️ Create company + default site + token
 		const { data, error: adminErr } = await Admin.createCompanyWithDefaultSite(company);
 		if (adminErr) throw new Error(adminErr.message);
 
-		// 2️⃣ Create the user under the company
+		// 2️ Create the user under the company
 		const svc = getServiceClient();
 		const { data: newUser, error: userErr } = await svc
 			.from('users')
@@ -26,14 +26,15 @@ export const POST = async ({ request }) => {
 				email: user.email,
 				full_name: user.full_name,
 				role: user.role,
-				company_id: data.company.id
+				company_id: data.company.id,
+				password: user.password
 			})
 			.select('*')
 			.single();
 
 		if (userErr) throw new Error(userErr.message);
 
-		// 3️⃣ Return everything
+		// 3️ Return everything
 		return json({
 			company: data.company,
 			site: data.site,
