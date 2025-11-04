@@ -9,7 +9,8 @@
 		X,
 		Trash2,
 		CheckCircle2,
-		AlertTriangle
+		AlertTriangle,
+		Building2
 	} from '@lucide/svelte';
 
 	// Local toaster
@@ -141,16 +142,18 @@
 </script>
 
 <!-- Main layout -->
-<div class="p-6 space-y-6">
+<div class="space-y-6">
 	<!-- Header -->
-	<div class="flex items-center justify-between">
+	<div class=" p-3 border-b border-surface-700 flex items-center justify-between">
 		<div>
-			<h1 class="text-2xl font-semibold text-on-surface">Company Sites</h1>
+			<h1 class="text-2xl font-semibold text-on-surface flex items-center gap-2">
+				<Building2 class="w-5 h-5 text-primary-400" />
+				Company Sites
+			</h1>
 			<p class="text-sm text-surface-400 mt-1">
 				Manage all connected domains and their JWT access tokens.
 			</p>
 		</div>
-
 		<button
 			on:click={() =>
 				(showModal = sites.length < max_pages[company_tier])
@@ -162,6 +165,7 @@
 	</div>
 
 	<!-- Sites Grid -->
+	<div class="p-3 space-y-6"> 
 	{#if loading}
 		<p class="text-surface-400 italic">Loading sites...</p>
 	{:else if sites.length === 0}
@@ -185,7 +189,7 @@
 						class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-400 to-primary-600"
 					></div>
 
-					<div class="p-5 flex flex-col gap-3">
+					<div class="p-5 flex flex-col gap-3 h-full">
 						<h2
 							class="font-semibold text-lg text-white flex items-center gap-2"
 						>
@@ -208,21 +212,22 @@
 								Reveal Token
 							</button>
 						{/if}
+						<div class="mt-auto">
+							<div class="flex items-center justify-between mt-auto">
+								<p class="text-xs text-surface-500">
+									Created
+									{site.created_at
+										? new Date(site.created_at).toLocaleDateString()
+										: '—'}
+								</p>
 
-						<div class="flex items-center justify-between mt-auto">
-							<p class="text-xs text-surface-500">
-								Created
-								{site.created_at
-									? new Date(site.created_at).toLocaleDateString()
-									: '—'}
-							</p>
-
-							<button
-								on:click={() => openDeleteModal(site)}
-								class="text-xs text-error-400 hover:text-error-300 transition flex items-center gap-1"
-							>
-								<Trash2 class="w-3 h-3" /> Delete
-							</button>
+								<button
+									on:click={() => openDeleteModal(site)}
+									class="text-xs text-error-400 hover:text-error-300 transition flex items-center gap-1"
+								>
+									<Trash2 class="w-3 h-3" /> Delete
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -242,7 +247,7 @@
 			</div>
 		{/if}
 	{/if}
-
+	</div>
 	<!-- Add Site Modal -->
 	{#if showModal}
 		<div
@@ -293,56 +298,61 @@
 	{/if}
 
 	<!-- Delete Confirmation Modal -->
-	{#if deleteModal && siteToDelete}
-		<div
-			class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+{#if deleteModal && siteToDelete}
+<div
+	class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+	on:click={() => (deleteModal = false)}
+>
+	<div
+		class="bg-surface-900 border border-surface-700 rounded-xl p-6 w-full max-w-md shadow-lg relative"
+		on:click|stopPropagation
+	>
+		<button
 			on:click={() => (deleteModal = false)}
+			class="absolute top-3 right-3 text-surface-400 hover:text-surface-200"
 		>
-			<div
-				class="bg-surface-900 border border-surface-700 rounded-xl p-6 w-full max-w-md shadow-lg relative"
-				on:click|stopPropagation
+			<X class="w-5 h-5" />
+		</button>
+
+		<h2 class="text-lg font-semibold text-white mb-2">Delete Site</h2>
+		<p class="text-sm text-surface-400 mb-3">
+			To confirm deletion, type the domain name
+			<span class="text-surface-200 font-semibold">
+				{siteToDelete.domain}
+			</span>
+			below.
+		</p>
+
+		<!-- ⚠️ Permanent deletion warning -->
+		<p class="text-xs text-error-400 font-medium mb-4">
+			This action is <span class="font-semibold">permanent</span>. All data, content, and configurations on this site will be <span class="font-semibold">irreversibly deleted</span> and cannot be recovered.
+		</p>
+
+		<input
+			type="text"
+			placeholder={siteToDelete.domain}
+			bind:value={deleteConfirm}
+			class="w-full px-3 py-2 rounded-lg bg-surface-800 border border-surface-600 text-sm text-surface-100 focus:ring-2 focus:ring-error-500 outline-none transition"
+		/>
+
+		<div class="flex justify-end gap-3 pt-5">
+			<button
+				on:click={() => (deleteModal = false)}
+				class="px-4 py-2 rounded-lg bg-surface-700 text-surface-200 hover:bg-surface-600 transition"
 			>
-				<button
-					on:click={() => (deleteModal = false)}
-					class="absolute top-3 right-3 text-surface-400 hover:text-surface-200"
-				>
-					<X class="w-5 h-5" />
-				</button>
-
-				<h2 class="text-lg font-semibold text-white mb-2">Delete Site</h2>
-				<p class="text-sm text-surface-400 mb-4">
-					To confirm deletion, type the domain name
-					<span class="text-surface-200 font-semibold">
-						{siteToDelete.domain}
-					</span>
-					below.
-				</p>
-
-				<input
-					type="text"
-					placeholder={siteToDelete.domain}
-					bind:value={deleteConfirm}
-					class="w-full px-3 py-2 rounded-lg bg-surface-800 border border-surface-600 text-sm text-surface-100 focus:ring-2 focus:ring-error-500 outline-none transition"
-				/>
-
-				<div class="flex justify-end gap-3 pt-5">
-					<button
-						on:click={() => (deleteModal = false)}
-						class="px-4 py-2 rounded-lg bg-surface-700 text-surface-200 hover:bg-surface-600 transition"
-					>
-						Cancel
-					</button>
-					<button
-						on:click={deleteSite}
-						class="px-4 py-2 rounded-lg bg-error-600 text-white hover:bg-error-700 transition disabled:opacity-40 disabled:cursor-not-allowed"
-						disabled={deleteConfirm.trim() !== siteToDelete.domain}
-					>
-						Delete Site
-					</button>
-				</div>
-			</div>
+				Cancel
+			</button>
+			<button
+				on:click={deleteSite}
+				class="px-4 py-2 rounded-lg bg-error-600 text-white hover:bg-error-700 transition disabled:opacity-40 disabled:cursor-not-allowed"
+				disabled={deleteConfirm.trim() !== siteToDelete.domain}
+			>
+				Delete Site
+			</button>
 		</div>
-	{/if}
+	</div>
+</div>
+{/if}
 </div>
 
 <!-- Toasts -->

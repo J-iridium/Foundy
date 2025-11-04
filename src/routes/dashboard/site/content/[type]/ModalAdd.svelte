@@ -39,7 +39,7 @@
   <input class="w-full border rounded p-2 mb-3" placeholder="Price (e.g. 29.99)" bind:value={price} />
 {:else}
   <!-- media -->
-  <input class="w-full border rounded p-2 mb-2" placeholder="Title (optional)" bind:value={title} />
+  <input class="w-full border rounded p-2 mb-2" placeholder="Name" bind:value={title} />
   <input class="w-full border rounded p-2 mb-3" type="file" on:change={(e)=>file = e.currentTarget.files?.[0]} />
 {/if}
 

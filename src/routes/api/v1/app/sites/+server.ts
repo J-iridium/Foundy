@@ -14,7 +14,7 @@ export const GET = async ({ locals }) => {
 			.from('sites')
 			.select('*')
 		
-		console.log(data)
+		(data)
 
 		if (error) throw error;
 		return json({ data });

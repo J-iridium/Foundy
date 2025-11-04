@@ -22,7 +22,7 @@
 			loading = false;
 			return;
 		}else {
-			console.log(data)
+			(data)
 
 			goto('/dashboard');
 		}

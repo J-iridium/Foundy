@@ -112,9 +112,9 @@
 </script>
 
 <!-- Page container -->
-<div class="p-6 space-y-8">
+<div class="space-y-6">
 	<!-- Header -->
-	<div class="flex items-center justify-between">
+	<div class=" p-3 border-b border-surface-700 flex items-center justify-between">
 		<div>
 			<h1 class="text-2xl font-semibold text-on-surface flex items-center gap-2">
 				<Building2 class="w-5 h-5 text-primary-400" />
@@ -131,7 +131,7 @@
 			<Save class="w-4 h-4" /> Save Changes
 		</button>
 	</div>
-
+    <div class="p-3 space-y-6">
 	{#if loading}
 		<p class="text-surface-400 italic">Loading company information...</p>
 	{:else}
@@ -262,6 +262,7 @@
             </div>
         {/if}
 	{/if}
+</div>
 </div>
 
 <!-- Toast Group -->

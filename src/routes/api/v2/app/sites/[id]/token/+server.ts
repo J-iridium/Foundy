@@ -18,7 +18,7 @@ export const GET: RequestHandler = withUserAuth(async ({ auth, supabase, request
 
   if (error || !token) return fail(404, 'Site not found', error);
 
-  // console.log(token)
+  // (token)
 
   return ok({ token });
 });

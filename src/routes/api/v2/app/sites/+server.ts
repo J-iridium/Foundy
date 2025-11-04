@@ -30,7 +30,7 @@ export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, reques
     .select()
     .single();
   	
-  console.log(site.id)
+  (site.id)
   if (siteError) return fail(500, 'Failed to create site', siteError);
   // 2. Create analytics
 
@@ -40,7 +40,7 @@ export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, reques
   .select()
   .single();
   
-  console.log('y')
+  ('y')
   if (analyticsError) return fail(500, 'Failed to create analytics', analyticsError);
 
   // 3. Create site token
@@ -61,8 +61,8 @@ export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, reques
     .select()
     .single();
 
-  console.log('z', tokenError)
+  ('z', tokenError)
   if (tokenError) return fail(500, 'Failed to create site token', tokenError);
-  console.log('COMPLETE!')
+  ('COMPLETE!')
   return ok({ site, analytics, token });
 });

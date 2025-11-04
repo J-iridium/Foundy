@@ -26,21 +26,19 @@ Whether you’re a freelancer, small business, or an agency, Foundy lets you:
 |-----------|-----------|
 | 🖥️ **Dashboard** | Intuitive admin UI for content, products, and media |
 | 🔑 **Access Control** | Role-based users (Owner, Editor, Viewer) |
-| 📡 **API Delivery** | REST and GraphQL APIs for seamless integration |
+| 📡 **API Delivery** | REST APIs for seamless integration |
 | 🧱 **Developer Mode** | SDKs, webhooks, and schema extensions |
 | 🏷️ **Tagging & SEO** | Built-in meta management and tagging |
 | 🧰 **Multi-Tenant** | Manage multiple client sites from one account |
 | 🎨 **White Label** | Agency branding and custom domains |
 | 📊 **Analytics** | Content performance and usage insights |
-
 ---
 
 ## 🧑‍💻 Tech Stack
 
-- **Frontend:** SvelteKit + Skeleton UI + Lucide Icons  
+- **Frontend:** SvelteKit + Skeleton UI + Tailwind CSS + Lucide Icons
 - **Backend:** Node.js / Edge functions  
 - **Database:** PostgreSQL (multi-tenant schema)  
-- **Storage:** S3-compatible object storage (Bunny, AWS, etc.)  
 - **Auth:** JWT with role-based permissions  
 - **Integrations:** Stripe, Snipcart, Shopify Lite (optional)
 
@@ -58,4 +56,4 @@ Whether you’re a freelancer, small business, or an agency, Foundy lets you:
 git clone https://github.com/jiridium/foundy.git
 cd foundy
 npm install
-npm run dev
+npm run dev || npx vite dev

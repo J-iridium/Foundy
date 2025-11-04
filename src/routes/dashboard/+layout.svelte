@@ -41,16 +41,20 @@
 	};
   
   
-  let { children } = $props();
-  let anchorSidebar : string = 'btn justify-start px-2 w-full';
-  let sitesPromise: Promise<any[]>;
+	let { children } = $props();
+	let anchorSidebar : string = 'btn justify-start px-2 w-full';
+	let sitesPromise: Promise<any[]>;
 
 	async function fetchSites() {
 		const { data, error } = await CMS.Sites.list();
 		if (error) throw new Error(error);
 
-    selectedSite.set(data[0].id)
-    // $selectedSite = data[0];
+		data.forEach(element => {
+			if (element.id == JSON.parse(localStorage.getItem('selectedSite') || 'null')) {
+				selectedSite.set(element.id)
+			}
+			
+		});
 
 		return data ?? [];
 	}
@@ -59,6 +63,10 @@
 
   async function onSelect(e: Event) {
 		selectedSite.set((e.target as HTMLSelectElement).value);
+
+		if (typeof window !== 'undefined' && window.location.pathname.includes('site')) {
+			window.location.reload()
+		}
 	}
 </script>
   
@@ -74,11 +82,47 @@
 >
   <!-- Header -->
   <Navigation.Header class="p-3 border-b border-surface-700">
-    <img
+    <!-- <img
       src="/jiridium.png"
       alt="jiridium logo"
       class="w-full h-16 object-contain rounded-lg bg-surface-850 p-2"
-    />
+    /> -->
+	<svg xmlns="http://www.w3.org/2000/svg" width="200" height="64" viewBox="0 0 256 64" role="img" aria-label="Foundy logo">
+		<style>
+			/* Uses your Skeleton theme tokens if present; falls back to nice defaults */
+			:root {
+			--foundy-primary: var(--color-primary-500, #6E56CF);
+			--foundy-primary-400: var(--color-primary-400, #8B74E0);
+			--foundy-text: var(--color-surface-200, #E5E7EB);
+			--foundy-muted: var(--color-surface-400, #9CA3AF);
+			}
+			.mark-stroke { stroke: var(--foundy-primary); }
+			.mark-accent { fill: var(--foundy-primary-400, #8B74E0); }
+			.word { fill: var(--foundy-text); }
+		</style>
+
+		<!-- ICON (playful magnifying glass with soft smile) -->
+		<g transform="translate(10,8)">
+			<!-- glass -->
+			<circle cx="20" cy="20" r="16" fill="none" stroke-width="6" class="mark-stroke" stroke-linecap="round" stroke-linejoin="round"/>
+			<!-- handle -->
+			<path d="M31 31 L46 46" fill="none" stroke-width="6" class="mark-stroke" stroke-linecap="round" />
+			<!-- smile inside the lens -->
+			<path d="M12 23 C16 28, 24 28, 28 23" fill="none" stroke-width="4" class="mark-stroke" stroke-linecap="round" stroke-linejoin="round"/>
+			<!-- sparkle dot -->
+			<circle cx="14.5" cy="12.5" r="2.5" class="mark-accent"/>
+		</g>
+
+		<!-- WORDMARK -->
+		<g transform="translate(84, 44)">
+			<!-- Using system rounded fonts; you can swap this for your brand font -->
+			<text class="word" font-family="ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Inter, Poppins, Arial, sans-serif"
+				font-size="28" font-weight="700" letter-spacing="0.5">
+			Foundy
+			</text>
+		</g>
+		</svg>
+
   </Navigation.Header>
 
   <!-- Scrollable Content -->

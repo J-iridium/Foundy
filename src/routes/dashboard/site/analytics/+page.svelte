@@ -6,7 +6,7 @@
 	import LineChart from '$lib/components/LineChart.svelte';
 	import BarChart from '$lib/components/BarChart.svelte';
 	import { Toast, createToaster } from '@skeletonlabs/skeleton-svelte';
-	import { CheckCircle2, AlertTriangle } from '@lucide/svelte';
+	import { CheckCircle2, AlertTriangle, Globe } from '@lucide/svelte';
 
 	const toaster = createToaster({});
 	let analytics = null;
@@ -54,15 +54,20 @@
 	}
 </script>
 
-<div class="p-6 space-y-6">
+<div class="space-y-6">
 	<!-- Header -->
-	<div>
-		<h1 class="text-2xl font-semibold text-on-surface">Site Analytics</h1>
-		<p class="text-sm text-surface-400 mt-1">
-			Usage and performance for your selected site.
-		</p>
+	<div class=" p-3 border-b border-surface-700 flex items-center justify-between">
+		<div>
+			<h1 class="text-2xl font-semibold text-on-surface flex items-center gap-2">
+				<Globe class="w-5 h-5 text-primary-400" />
+				Site Analytics
+			</h1>
+			<p class="text-sm text-surface-400 mt-1">
+				Usage and performance for your selected site.
+			</p>
+		</div>
 	</div>
-
+	<div class="p-3 space-y-6">
 	{#if loading}
 		<p class="text-surface-400 italic">Loading analytics...</p>
 	{:else if !analytics}
@@ -109,6 +114,7 @@
 			</div>
 		</div>
 	{/if}
+	</div>
 </div>
 
 <!-- Toasts -->

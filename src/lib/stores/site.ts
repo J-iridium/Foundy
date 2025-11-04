@@ -1,22 +1,20 @@
 import { browser } from '$app/environment';
 import { writable } from 'svelte/store';
 
-const name = 'selectedSite';
-const stored = browser ? localStorage.getItem(name) : null;
+const STORAGE_KEY = 'selectedSite';
 
-export const selectedSite = writable(stored ? JSON.parse(stored) : null);
+// Initialize store with stored value (only in browser)
+const initialValue = browser ? JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') : null;
 
+export const selectedSite = writable(initialValue);
+
+// Persist to localStorage when changed (only in browser)
 if (browser) {
-	selectedSite.subscribe((value, prev) => {
-		if (value) {
-			localStorage.setItem(name, JSON.stringify(value));
-			// Only reload if the site actually changed
-			if (prev && value !== prev) {
-				location.reload();
-			}
+	selectedSite.subscribe((value) => {
+		if (value !== null && value !== undefined) {
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
 		} else {
-			localStorage.removeItem(name);
-			location.reload(); // Optional: reload if cleared
+			localStorage.removeItem(STORAGE_KEY);
 		}
 	});
 }
