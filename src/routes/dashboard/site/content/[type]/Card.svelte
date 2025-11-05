@@ -1,18 +1,27 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
+
 	export let item: {
-		id: number;
-		title: string;
-		slug: string;
-		image?: string;
-		excerpt?: string;
-		description?: string;
+		id: string;
+		site_id: string;
+		name: string;
+		type: 'posts' | 'products' | 'media';
 		status: 'Draft' | 'Published' | 'Archived';
+		created_at: string;
+		updated_at: string;
+		data: {
+			title?: string;
+			excerpt?: string;
+			description?: string;
+			images?: string[];
+			[key: string]: any;
+		};
 	};
+
 	export let type: 'posts' | 'products' | 'media' = 'posts';
-	export let onEdit: (id: number) => void;
-	export let onDelete: (id: number) => void;
-	export let onStatusChange: (id: number, newStatus: string) => void;
+	export let onEdit: (id: string) => void;
+	export let onDelete: (id: string) => void;
+	export let onStatusChange: (id: string, newStatus: string) => void;
 
 	const dispatch = createEventDispatcher();
 
@@ -23,11 +32,10 @@
 	};
 </script>
 
-<!-- Generic Card -->
 <div
 	class="relative rounded-xl border border-surface-700 bg-surface-800 overflow-hidden hover:border-primary-700 transition"
 >
-	<!-- Status color bar -->
+	<!-- Status bar -->
 	<div
 		class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r {statusColors[item.status]}"
 	></div>
@@ -35,10 +43,10 @@
 	<!-- MEDIA CARD VIEW -->
 	{#if type === 'media'}
 		<!-- Image -->
-		{#if item.image}
+		{#if item.data?.images?.length}
 			<img
-				src={item.image}
-				alt={item.title}
+				src={`data:image/jpeg;base64,${item.data.images[0]}`}
+				alt={item.data.title || item.name}
 				class="w-full h-56 object-cover border-b border-surface-700"
 			/>
 		{:else}
@@ -51,12 +59,13 @@
 
 		<!-- Name -->
 		<div class="p-4 text-center">
-			<h2 class="text-white font-medium truncate">{item.title}</h2>
+			<h2 class="text-white font-medium truncate">
+				{item.data?.title || item.name}
+			</h2>
 		</div>
 
 		<!-- Footer -->
 		<div class="border-t border-surface-700 px-4 py-3 space-y-3">
-			<!-- Status selector -->
 			<div class="flex justify-center">
 				<select
 					class="text-sm bg-surface-700 text-surface-200 rounded-md border border-surface-600 px-2 py-1 focus:ring-2 focus:ring-primary-500"
@@ -68,10 +77,7 @@
 				</select>
 			</div>
 
-			<!-- Action buttons -->
-			<div
-				class="flex justify-around text-sm border-t border-surface-700 pt-2 mt-2 text-center"
-			>
+			<div class="flex justify-around text-sm border-t border-surface-700 pt-2 mt-2 text-center">
 				<button
 					class="text-primary-400 hover:text-primary-300 transition"
 					on:click={() => dispatch('preview', item)}
@@ -88,26 +94,32 @@
 		</div>
 
 	{:else}
-		<!-- DEFAULT CARD VIEW (Posts / Products) -->
-		{#if item.image}
+		<!-- POSTS / PRODUCTS VIEW -->
+		{#if item.data?.images?.length}
 			<img
-				src={item.image}
-				alt=""
+				src={`data:image/jpeg;base64,${item.data.images[0]}`}
+				alt={item.data?.title || ''}
 				class="w-full h-40 object-cover border-b border-surface-700"
 			/>
+		{:else if type==='products' && item.data?.images?.length}
+			<div
+			class="w-full h-40 object-cover border-b border-surface-700 flex items-center justify-center bg-surface-900 border-b border-surface-700 text-surface-400 text-sm"
+			>
+				No Image Available
+			</div>
 		{/if}
 
-		<div class="p-5 flex flex-col gap-3">
+		<div class="p-5 flex flex-col gap-3 h-max">
 			<h2 class="font-semibold text-lg text-white truncate">
-				{item.title}
+				{item.data?.title || item.name}
 			</h2>
 			<p class="text-surface-400 text-sm line-clamp-2">
-				{item.excerpt || item.description || 'No description yet.'}
+				{item.data?.excerpt || item.data?.description || 'No description yet.'}
 			</p>
 
-			<div class="flex justify-between items-center mt-2">
+			<div class="flex justify-between items-center mt-2 mt-auto">
 				<select
-					class="text-sm bg-surface-700 text-surface-200 rounded-md border border-surface-600 px-2 py-1 focus:ring-2 focus:ring-primary-500"
+					class="text-sm bg-surface-700 text-surface-200 rounded-md border border-surface-600 px-6 py-1 focus:ring-2 focus:ring-primary-500"
 					bind:value={item.status}
 					on:change={() => onStatusChange(item.id, item.status)}
 				>
@@ -126,9 +138,7 @@
 				</span>
 			</div>
 
-			<div
-				class="flex justify-around text-sm mt-3 pt-2 border-t border-surface-700"
-			>
+			<div class="flex justify-around text-sm mt-3 pt-2 border-t border-surface-700">
 				<button
 					class="text-primary-400 hover:text-primary-300 transition"
 					on:click={() => dispatch('preview', item)}

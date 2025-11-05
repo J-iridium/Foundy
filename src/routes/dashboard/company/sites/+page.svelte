@@ -73,7 +73,9 @@
 			toaster.warning({ title: 'Error creating site', description: error });
 			return;
 		}
-		sites = [...sites, data];
+		fetchSites();
+		// sites = [...sites, data];
+		// console.log(sites)
 		newDomain = '';
 		showModal = false;
 		toaster.success({

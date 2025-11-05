@@ -3,7 +3,8 @@ import { ok, fail } from '$lib/server/http';
 import { HttpError } from '$lib/server/auth';
 
 export const PATCH = withUserAuth(async ({ auth, supabase, params, request }) => {
-	const { id: site_id, name } = params;
+	const { site_id, content_id } = params;
+
 	if (!['owner', 'editor'].includes(auth.role))
 		throw new HttpError(403, 'Insufficient permissions');
 
@@ -13,14 +14,14 @@ export const PATCH = withUserAuth(async ({ auth, supabase, params, request }) =>
 		.from('content')
 		.update(updates)
 		.eq('site_id', site_id)
-		.eq('name', name)
-		.eq('company_id', auth.company_id)
+		.eq('id', content_id)
 		.select('*')
 		.single();
 
 	if (error) return fail(400, 'Failed to update content', error);
 	return ok(data);
 });
+
 
 export const DELETE = withUserAuth(async ({ auth, supabase, params }) => {
 	const { id: site_id, name } = params;

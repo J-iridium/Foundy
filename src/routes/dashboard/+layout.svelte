@@ -64,7 +64,7 @@
   async function onSelect(e: Event) {
 		selectedSite.set((e.target as HTMLSelectElement).value);
 
-		if (typeof window !== 'undefined' && window.location.pathname.includes('site')) {
+		if (typeof window !== 'undefined' && window.location.pathname.includes('site/')) {
 			window.location.reload()
 		}
 	}

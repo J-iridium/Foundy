@@ -144,6 +144,16 @@ export class CMSClient {
 			return { data: data.data, error: null };
 		},
 
+		listByType: async (site_id: string, type: string) => {
+			const res = await fetch(
+				`${this.base}/sites/${site_id}/content?type=${encodeURIComponent(type)}`,
+				{ credentials: 'include' }
+			);
+			const data = await res.json();
+			if (!res.ok) return { data: [], error: data.error };
+			return { data: data.data, error: null };
+		},
+
 		get: async (site_id: string, name: string) => {
 			const res = await fetch(
 				`${this.base}/sites/${site_id}/content/${encodeURIComponent(name)}`,
@@ -167,14 +177,18 @@ export class CMSClient {
 				body: JSON.stringify(payload),
 				credentials: 'include'
 			});
+
 			const data = await res.json();
+
+			console.log("x")
 			if (!res.ok) return { data: null, error: data.error };
+			console.log("z")
 			return { data: data.data, error: null };
 		},
 
-		update: async (site_id: string, name: string, updates: any) => {
+		update: async (site_id: string, content_id: string, updates: any) => {
 			const res = await fetch(
-				`${this.base}/sites/${site_id}/content/${encodeURIComponent(name)}`,
+				`${this.base}/sites/${site_id}/content?name=${encodeURIComponent(content_id)}`,
 				{
 					method: 'PATCH',
 					headers: { 'Content-Type': 'application/json' },
@@ -182,23 +196,25 @@ export class CMSClient {
 					credentials: 'include'
 				}
 			);
+		
 			const data = await res.json();
 			if (!res.ok) return { data: null, error: data.error };
 			return { data: data.data, error: null };
 		},
+		
 
-		remove: async (site_id: string, name: string) => {
-			const res = await fetch(
-				`${this.base}/sites/${site_id}/content/${encodeURIComponent(name)}`,
-				{
-					method: 'DELETE',
-					credentials: 'include'
-				}
-			);
+		remove: async (site_id: string, content_id: string) => {
+			const res = await fetch(`${this.base}/sites/${site_id}/content`, {
+				method: 'DELETE',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ content_id }),
+				credentials: 'include'
+			});
 			const data = await res.json();
 			if (!res.ok) return { success: false, error: data.error };
 			return { success: true, error: null };
 		}
+		
 	};
 
 	// -----------------------------------------------------------------------
