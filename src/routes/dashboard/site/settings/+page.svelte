@@ -5,6 +5,7 @@
 	import { CMS } from '$lib/cms';
 	import { Toast, createToaster } from '@skeletonlabs/skeleton-svelte';
 	import { Globe, Key, RefreshCw, Save, CheckCircle2, AlertTriangle } from '@lucide/svelte';
+    import PageHeader from '$components/PageHeader.svelte';
 
 	const toaster = createToaster({});
 
@@ -119,25 +120,17 @@
 
 <div class="space-y-6">
 	<!-- Header -->
-	 <div class=" p-3 border-b border-surface-700 flex items-center justify-between">
-		<div>
-			<h1 class="text-2xl font-semibold text-on-surface flex items-center gap-2">
-				<Globe class="w-5 h-5 text-primary-400" />
-				Site Settings
-			</h1>
-			<p class="text-sm text-surface-400 mt-1">
-				View and manage this site's configuration.
-			</p>
-		</div>
-		<button
-			on:click={saveChanges}
-			class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition"
-			disabled={saving}
-		>
-			<Save class="w-4 h-4" />
-			{saving ? 'Saving...' : 'Save Changes'}
-		</button>
-	</div>
+	<PageHeader 
+		title="Site Settings" 
+		description="View and manage this site's configuration."
+		action={saveChanges}
+		iconButton={Save}
+		iconTitle={Globe}
+		isDisabled={saving}
+		textButton={saving ? 'Saving...' : 'Save Changes'}
+	/> 
+
+	<!-- CONTENT -->
 	<div class="p-3 space-y-6">
 		{#if loading}
 			<p class="text-surface-400 italic">Loading site settings...</p>

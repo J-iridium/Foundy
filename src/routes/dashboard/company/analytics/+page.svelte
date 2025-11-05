@@ -6,6 +6,7 @@
 	import { CMS } from '$lib/cms';
 	import { Toast, createToaster } from '@skeletonlabs/skeleton-svelte';
 	import { CheckCircle2, AlertTriangle, Building2 } from '@lucide/svelte';
+    import PageHeader from '$components/PageHeader.svelte';
 
 	const toaster = createToaster({});
 
@@ -61,17 +62,12 @@
 
 <div class="space-y-6">
 	<!-- Header -->
-    <div class="p-3 border-b border-surface-700 flex items-center justify-between">
-		<div>
-			<h1 class="text-2xl font-semibold text-on-surface flex items-center gap-2">
-				<Building2 class="w-5 h-5 text-primary-400" />
-				Company Analytic
-			</h1>
-			<p class="text-sm text-surface-400 mt-1">
-				Overview of usage and performance across all sites.
-			</p>
-		</div>
-	</div>
+	<PageHeader 
+		title="Company Analytic" 
+		description="Overview of usage and performance across all sites."
+		iconTitle={Building2}
+	/> 
+    
     <div class="p-3 space-y-6 overflow-y-auto">
 	{#if loading}
 		<p class="text-surface-400 italic">Loading analytics...</p>

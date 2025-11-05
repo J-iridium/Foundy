@@ -1,7 +1,6 @@
 <script lang="ts">
 	  import favicon from '$lib/assets/favicon.svg';
     import { Navigation } from '@skeletonlabs/skeleton-svelte';
-    import { onMount } from 'svelte';
     import { CMS } from '$lib/cms';
     import { selectedSite } from '$lib/stores/site';
     import { page } from '$app/stores';
@@ -10,13 +9,8 @@
       BarChart3,
       ImageIcon,
       PackageIcon,
-      HouseIcon,
-      LayoutIcon,
       FileTextIcon,
-      UsersIcon,
       SettingsIcon,
-      SkullIcon,
-      PanelsTopLeftIcon,
       LogOutIcon,
       GlobeIcon
     } from '@lucide/svelte';
@@ -42,7 +36,7 @@
   
   
 	let { children } = $props();
-	let anchorSidebar : string = 'btn justify-start px-2 w-full';
+	// let anchorSidebar : string = 'btn justify-start px-2 w-full';
 	let sitesPromise: Promise<any[]>;
 
 	async function fetchSites() {

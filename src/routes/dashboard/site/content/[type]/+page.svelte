@@ -86,6 +86,7 @@
 	}
 
 	import ModalEdit from './ModalEdit.svelte';
+    import PageHeader from '$components/PageHeader.svelte';
 
 	let showEditModal = false;
 	let editItem: any = null;
@@ -145,23 +146,14 @@
 <!-- Layout -->
 <div class="space-y-6">
 	<!-- Header -->
-	<div class="p-3 border-b border-surface-700 flex items-center justify-between">
-		<div>
-			<h1 class="text-2xl font-semibold text-on-surface flex items-center gap-2">
-				<Package class="w-5 h-5 text-primary-400" />
-				Manage {type}
-			</h1>
-			<p class="text-sm text-surface-400 mt-1">
-				Add, edit, and organize all {type} in your CMS.
-			</p>
-		</div>
-		<button
-			on:click={() => (showModal = true)}
-			class="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition"
-		>
-			<PlusCircle class="w-4 h-4" /> Add {type.slice(0, -1)}
-		</button>
-	</div>
+	<PageHeader 
+		title={`Manage ${type}`} 
+		description={`Add, edit, and organize all ${type} in your CMS.`}
+		action={() => (showModal = true)}
+		iconButton={PlusCircle}
+		iconTitle={Package}
+		textButton={`Add ${type?.slice(0, -1)}`}
+	/> 
 
 	<!-- Content Grid -->
 	<div class="p-3 space-y-6">

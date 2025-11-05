@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageHeader from '$components/PageHeader.svelte';
 	import { onMount } from 'svelte';
 	import { CMS } from '$lib/cms';
 	import { Pagination, Toast, createToaster } from '@skeletonlabs/skeleton-svelte';
@@ -146,25 +147,15 @@
 <!-- Main layout -->
 <div class="space-y-6">
 	<!-- Header -->
-	<div class=" p-3 border-b border-surface-700 flex items-center justify-between">
-		<div>
-			<h1 class="text-2xl font-semibold text-on-surface flex items-center gap-2">
-				<Building2 class="w-5 h-5 text-primary-400" />
-				Company Sites
-			</h1>
-			<p class="text-sm text-surface-400 mt-1">
-				Manage all connected domains and their JWT access tokens.
-			</p>
-		</div>
-		<button
-			on:click={() =>
-				(showModal = sites.length < max_pages[company_tier])
-			}
-			class="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition"
-		>
-			<PlusCircle class="w-4 h-4" /> Add Site
-		</button>
-	</div>
+	<PageHeader 
+	 	title="Company Sites" 
+	 	description="Manage all connected domains and their JWT access tokens."
+		action={() => (showModal = sites.length < max_pages[company_tier])}
+		iconButton={PlusCircle}
+		iconTitle={Building2}
+		textButton="Add Site"
+	/> 
+	
 
 	<!-- Sites Grid -->
 	<div class="p-3 space-y-6"> 

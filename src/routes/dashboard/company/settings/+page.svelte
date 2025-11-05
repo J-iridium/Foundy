@@ -3,6 +3,7 @@
 	import { CMS } from '$lib/cms';
 	import { Save, Building2, Layers, ArrowUpRight, UploadIcon, ImageIcon } from '@lucide/svelte';
 	import { createToaster, Toast } from '@skeletonlabs/skeleton-svelte';
+    import PageHeader from '$components/PageHeader.svelte';
 	
     
     const toaster = createToaster({});
@@ -90,7 +91,7 @@
 	}
 
     // TODO: Reactive this
-	async function saveCompany() {
+	async function saveChanges() {
 		// const { error } = await CMS.Company.update({
 		// 	name,
 		// 	description,
@@ -114,23 +115,15 @@
 <!-- Page container -->
 <div class="space-y-6">
 	<!-- Header -->
-	<div class=" p-3 border-b border-surface-700 flex items-center justify-between">
-		<div>
-			<h1 class="text-2xl font-semibold text-on-surface flex items-center gap-2">
-				<Building2 class="w-5 h-5 text-primary-400" />
-				Company Settings
-			</h1>
-			<p class="text-sm text-surface-400 mt-1">
-				Update your company details and plan information.
-			</p>
-		</div>
-		<button
-			on:click={saveCompany}
-			class="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition"
-		>
-			<Save class="w-4 h-4" /> Save Changes
-		</button>
-	</div>
+	<PageHeader 
+		title="Company Settings" 
+		description="Update your company details and plan information."
+		action={saveChanges}
+		iconButton={Save}
+		iconTitle={Building2}
+		textButton="Save Changes"
+	/> 
+
     <div class="p-3 space-y-6">
 	{#if loading}
 		<p class="text-surface-400 italic">Loading company information...</p>
