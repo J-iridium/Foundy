@@ -1,10 +1,11 @@
 <script lang="ts">
 	  import favicon from '$lib/assets/favicon.svg';
     import { Navigation } from '@skeletonlabs/skeleton-svelte';
-    import { CMS } from '$lib/cms';
-    import { selectedSite } from '$lib/stores/site';
+    import { CMS } from '$lib/supabase/cms';
+    import { store_selectedSite } from '$lib/stores/site';
     import { page } from '$app/stores';
-
+    import { Toast } from '@skeletonlabs/skeleton-svelte';
+    import { store_toast } from '$lib/stores/toast';
     import {
       BarChart3,
       ImageIcon,
@@ -12,7 +13,13 @@
       FileTextIcon,
       SettingsIcon,
       LogOutIcon,
-      GlobeIcon
+      GlobeIcon,
+      CircleX,
+      CheckCircle2,
+
+      AlertTriangle
+
+
     } from '@lucide/svelte';
     
     const companyLinkSidebar = {
@@ -34,6 +41,7 @@
 		],
 	};
   
+  let toaster = $store_toast;
   
 	let { children } = $props();
 	// let anchorSidebar : string = 'btn justify-start px-2 w-full';
@@ -44,8 +52,8 @@
 		if (error) throw new Error(error);
 
 		data.forEach(element => {
-			if (element.id == JSON.parse(localStorage.getItem('selectedSite') || 'null')) {
-				selectedSite.set(element.id)
+			if (element.id == JSON.parse(localStorage.getItem('store_selectedSite') || 'null')) {
+				store_selectedSite.set(element.id)
 			}
 			
 		});
@@ -56,7 +64,7 @@
 	sitesPromise = fetchSites();
 
   async function onSelect(e: Event) {
-		selectedSite.set((e.target as HTMLSelectElement).value);
+		store_selectedSite.set((e.target as HTMLSelectElement).value);
 
 		if (typeof window !== 'undefined' && window.location.pathname.includes('site/')) {
 			window.location.reload()
@@ -160,7 +168,7 @@
           </div>
         {:else}
           <select
-            bind:value={$selectedSite}
+            bind:value={$store_selectedSite}
             onchange={onSelect}
             class="
               w-full px-3 py-2 rounded-lg bg-surface-800 text-surface-100 text-sm border border-surface-600
@@ -232,3 +240,45 @@
     </div>
   </div>
 
+  <Toast.Group {toaster} position="bottom-right">
+    {#snippet children(toast)}
+      <Toast
+        {toast}
+        class="rounded-lg shadow-md flex items-start gap-3 p-4 min-w-[280px] border-l-4"
+        style="
+          background-color: var(--color-surface-900);
+          border-color: {
+            toast.type === 'success' ? 'var(--color-success-500)' :
+            toast.type === 'warning' ? 'var(--color-warning-500)' :
+            toast.type === 'error' ? 'var(--color-error-500)' :
+            'var(--color-surface-700)'
+          };
+        "
+      >
+        <!-- Icon -->
+        {#if toast.type === 'success'}
+          <CheckCircle2 class="text-success-400 w-5 h-5 mt-1" />
+        {:else if toast.type === 'warning'}
+          <AlertTriangle class="text-warning-400 w-5 h-5 mt-1" />
+        {:else if toast.type === 'error'}
+          <CircleX class="text-error-400 w-5 h-5 mt-1" />
+        {/if}
+  
+        <!-- Message -->
+        <Toast.Message class="flex-1 text-on-surface">
+          <Toast.Title class="font-semibold">{toast.title}</Toast.Title>
+          {#if toast.description}
+            <Toast.Description class="text-sm opacity-90 mt-1">
+              {toast.description}
+            </Toast.Description>
+          {/if}
+        </Toast.Message>
+  
+        <!-- Close -->
+        <Toast.CloseTrigger
+          class="ml-2 text-surface-400 hover:text-white transition-colors"
+        />
+      </Toast>
+    {/snippet}
+  </Toast.Group>
+  
