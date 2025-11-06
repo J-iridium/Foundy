@@ -2,7 +2,9 @@
 
 export class CMSClient {
 	private base: string;
-	constructor(base = '/api/v2/app') {
+	private version : number;
+	constructor(version = 2,base = `/api/v${version}/app`) {
+		this.version = version;
 		this.base = base;
 	}
 
