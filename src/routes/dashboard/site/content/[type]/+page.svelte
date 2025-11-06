@@ -1,21 +1,20 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { CMS } from '$lib/cms'; // <-- our client SDK
+	import { CMS } from '$lib/supabase/cms'; // <-- our client SDK
 	import Card from './Card.svelte';
 	import { PlusCircle, X, Package } from '@lucide/svelte';
-	import { Toast, createToaster } from '@skeletonlabs/skeleton-svelte';
+	import { showToast } from '$lib/stores/toast';
 	import ModalAdd from './ModalAdd.svelte';
 	import ModalPreview from './ModalPreview.svelte';
-	import { selectedSite } from '$lib/stores/site';
-	import { onMount } from 'svelte';
+	import { store_selectedSite } from '$lib/stores/site';
+	import ModalEdit from './ModalEdit.svelte';
+    import PageHeader from '$components/PageHeader.svelte';
 
-	const toaster = createToaster({});
 	let items: any[] = [];
 	let showModal = false;
 	let previewItem: any = null;
 
-	function onPreview(item) {
-		console.log('Preview clicked:', item);
+	function onPreview(item : any) {
 		previewItem = item;
 	}
 	function closePreview() {
@@ -23,16 +22,13 @@
 	}
 
 	// Reactive derived values
-	$: site_id = $selectedSite;
+	$: site_id = $store_selectedSite;
 	$: type = $page.params.type; // 'posts' | 'products' | 'media'
+	$: loadItems(); // run reactively when route params change
 	$: if (site_id && type) {
-		console.log('Reloading content for', site_id, type);
 		loadItems();
 	}
 
-	onMount(() => {
-		console.log('onMount type:', type);
-	});
 	// -----------------------------------------------------
 	// LOAD CONTENT FROM DB
 	// -----------------------------------------------------
@@ -42,32 +38,31 @@
 		console.log(data)
 		if (error) {
 			console.error(error);
-			toaster.warning({ title: 'Load Failed', description: 'Could not load content.' });
+			showToast('warning', 'Load Failed', 'Could not load content.')
 			return;
 		}
 		items = data || [];
 	}
 
-	$: loadItems(); // run reactively when route params change
 
 	// -----------------------------------------------------
 	// HANDLE ADD / DELETE / UPDATE
 	// -----------------------------------------------------
-	async function addItem(e) {
+	async function addItem(e : any) {
 		const payload = e.detail;
 		const { data, error } = await CMS.Content.create({
 			site_id,
 			name: payload.name,
-			type: type,
+			type: type? type : '',
 			status: payload.status,
 			data: payload.data,
 		});
 		if (error) {
-			toaster.warning({ title: 'Add Failed', description: error });
+			showToast('warning', 'Add Failed', error)
 			return;
 		}
 		items = [data, ...items];
-		toaster.success({ title: 'Added', description: `Created new ${type.slice(0, -1)}` });
+		showToast('success', 'Added', `Created new  ${type?.slice(0,-1)}`)
 	}
 
 	async function onDelete(id: string) {
@@ -75,19 +70,13 @@
 		const { error } = await CMS.Content.remove(site_id, id);
 
 		if (error) {
-			toaster.warning({ title: 'Delete Failed', description: error });
+			showToast('warning', 'Delete Failed', error)
 			return;
 		}
-
-		toaster.success({
-			title: 'Deleted',
-			description: `Removed content ID: ${id}`
-		});
+		showToast('success', 'Deleted', `Removed content ID: ${id}`)
 	}
 
-	import ModalEdit from './ModalEdit.svelte';
-    import PageHeader from '$components/PageHeader.svelte';
-
+	
 	let showEditModal = false;
 	let editItem: any = null;
 
@@ -98,22 +87,22 @@
 		showEditModal = true;
 	}
 
-	async function saveEdit(e) {
+	async function saveEdit(e : any) {
 		const payload = e.detail;
 		const { data, error } = await CMS.Content.update(site_id, payload.id, {
 			status: payload.status,
 			data: payload.data,
 			name: payload.name
 		});
+		
 		if (error) {
-			toaster.warning({ title: 'Update Failed', description: error });
+			showToast('warning', 'Update Failed', error)
 			return;
 		}
 
-		// Update UI
 		items = items.map((i) => (i.id === payload.id ? data : i));
 		showEditModal = false;
-		toaster.success({ title: 'Updated', description: 'Changes saved successfully.' });
+		showToast('success', 'Updated', 'Changes saved successfully.')
 	}
 
 
@@ -128,18 +117,10 @@
 		if (error) {
 			// 3 Roll back on failure
 			items = items.map((i) => (i.id === id ? { ...i, status: 'Draft' } : i));
-			toaster.warning({
-				title: 'Update Failed',
-				description: error
-			});
+			showToast('warning', 'Update Failed', error)
 			return;
 		}
-
-		// 4️ Confirm success
-		toaster.info({
-			title: 'Status Updated',
-			description: `Content set to ${newStatus}`
-		});
+		showToast('success', 'Status Updated', `Content set to ${newStatus}`)
 	}
 </script>
 
@@ -149,7 +130,7 @@
 	<PageHeader 
 		title={`Manage ${type}`} 
 		description={`Add, edit, and organize all ${type} in your CMS.`}
-		action={() => (showModal = true)}
+		action={() => {(showModal = true)}}
 		iconButton={PlusCircle}
 		iconTitle={Package}
 		textButton={`Add ${type?.slice(0, -1)}`}
@@ -161,7 +142,7 @@
 			<div class="border border-surface-700 rounded-lg p-6 text-center text-surface-400 bg-surface-800">
 				<p>No {type} yet.</p>
 				<p class="text-sm mt-2">
-					Click <span class="text-primary-400 font-medium">“Add {type.slice(0, -1)}”</span> to create your first entry.
+					Click <span class="text-primary-400 font-medium">“Add {type?.slice(0, -1)}”</span> to create your first entry.
 				</p>
 			</div>
 		{:else}
@@ -232,23 +213,3 @@
 {#if previewItem}
 	<ModalPreview {type} item={previewItem} onClose={closePreview} />
 {/if}
-
-<!-- Toasts -->
-<Toast.Group {toaster} position="bottom-right">
-	{#snippet children(toast)}
-		<Toast
-			{toast}
-			class="bg-surface-900 border border-surface-700 text-on-surface rounded-lg shadow-md flex items-start gap-3 p-4 min-w-[280px]"
-		>
-			<Toast.Message class="flex-1">
-				<Toast.Title class="font-semibold">{toast.title}</Toast.Title>
-				{#if toast.description}
-					<Toast.Description class="text-sm opacity-90 mt-1">
-						{toast.description}
-					</Toast.Description>
-				{/if}
-			</Toast.Message>
-			<Toast.CloseTrigger class="ml-2 text-surface-400 hover:text-white transition" />
-		</Toast>
-	{/snippet}
-</Toast.Group>

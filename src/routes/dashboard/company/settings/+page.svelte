@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { CMS } from '$lib/cms';
+	import { CMS } from '$lib/supabase/cms';
 	import { Save, Building2, Layers, ArrowUpRight, UploadIcon, ImageIcon } from '@lucide/svelte';
-	import { createToaster, Toast } from '@skeletonlabs/skeleton-svelte';
+	import { showToast } from '$lib/stores/toast';
     import PageHeader from '$components/PageHeader.svelte';
 	
     
-    const toaster = createToaster({});
     const max_pages  = {
 		'starter' : 1,
 		'pro' : 3,
@@ -29,13 +28,13 @@
 
     let loading = true;
     let uploading = false;
-    
+    let logoUrl = '';
 
 
     async function fetchCompanySites() {
         const {data, error} = await CMS.Sites.list();
         if (error) {
-			toaster.warning({ title: 'Error loading company', description: error });
+			showToast('warning', 'Error loading sites', error)
 			return;
 		}
         company.sites_limit = max_pages[company.plan];
@@ -45,7 +44,7 @@
 	async function fetchCompany() {
 		const { data, error } = await CMS.Company.get();
 		if (error) {
-			toaster.warning({ title: 'Error loading company', description: error });
+			showToast('warning', 'Error loading company', error)
 			return;
 		}
         company.name = data.name;
@@ -69,44 +68,36 @@
 			uploading = false;
 
 			if (error) {
-				toaster.warning({
-					title: 'Upload Failed',
-					description: error
-				});
+				showToast('warning', 'Upload Failed', error)
 				return;
 			}
 
 			logoUrl = data.url;
-			toaster.success({
-				title: 'Logo Uploaded',
-				description: 'Your company logo has been updated successfully.'
-			});
+			showToast('success', 'Logo Uploaded', 'Your company logo has been updated successfully.')
 		} catch (e) {
 			uploading = false;
-			toaster.warning({
-				title: 'Upload Failed',
-				description: 'An unexpected error occurred.'
-			});
+			showToast('error', 'Upload Failed', 'An unexpected error occurred')
+			console.log(e)
 		}
 	}
 
     // TODO: Reactive this
 	async function saveChanges() {
-		// const { error } = await CMS.Company.update({
-		// 	name,
-		// 	description,
-		// 	domain
-		// });
+		const name = company.name
+		const domain = company.domain
+		const description = company.description
+		const { error } = await CMS.Company.update({
+			name,
+			domain,
+			description
+		});
 
-		// if (error) {
-		// 	toaster.warning({ title: 'Save Failed', description: error });
-		// 	return;
-		// }
+		if (error) {
+			showToast('warning', 'Save Failed', error)
+			return;
+		}
 
-		// toaster.success({
-		// 	title: 'Company Settings Updated',
-		// 	description: 'Your changes have been saved successfully.'
-		// });
+		showToast('success', 'Company Settings Updated', 'Your changes have been saved successfully.')
 	}
 
 	onMount(fetchCompany);
@@ -258,22 +249,3 @@
 </div>
 </div>
 
-<!-- Toast Group -->
-<Toast.Group {toaster} position="bottom-right">
-	{#snippet children(toast)}
-		<Toast
-			{toast}
-			class="bg-surface-900 border border-surface-700 text-on-surface rounded-lg shadow-md flex items-start gap-3 p-4 min-w-[280px]"
-		>
-			<Toast.Message class="flex-1">
-				<Toast.Title class="font-semibold">{toast.title}</Toast.Title>
-				{#if toast.description}
-					<Toast.Description class="text-sm opacity-90 mt-1">
-						{toast.description}
-					</Toast.Description>
-				{/if}
-			</Toast.Message>
-			<Toast.CloseTrigger class="ml-2 text-surface-400 hover:text-white transition" />
-		</Toast>
-	{/snippet}
-</Toast.Group>

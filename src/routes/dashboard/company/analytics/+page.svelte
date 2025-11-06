@@ -3,14 +3,13 @@
 	import Card from '$lib/components/StatsCard.svelte';
 	import LineChart from '$lib/components/LineChart.svelte';
 	import BarChart from '$lib/components/BarChart.svelte';
-	import { CMS } from '$lib/cms';
-	import { Toast, createToaster } from '@skeletonlabs/skeleton-svelte';
+	import { CMS } from '$lib/supabase/cms';
 	import { CheckCircle2, AlertTriangle, Building2 } from '@lucide/svelte';
     import PageHeader from '$components/PageHeader.svelte';
+	import { showToast } from '$lib/stores/toast';
 
-	const toaster = createToaster({});
 
-	let analytics = [];
+	let analytics : any = [];
 	let loading = true;
 
 	// Aggregate stats for company dashboard
@@ -19,23 +18,21 @@
 	let avgSessionDuration = 0;
 	let totalDiskUsage = 0;
 
-	onMount(async () => {
+	async function load() {
 		const { data, error } = await CMS.Company.analytics();
 
 		if (error) {
-			toaster.warning({
-				title: 'Analytics Error',
-				description: error
-			});
+			showToast('warning', 'Analytics Error', error)
 			loading = false;
 			return;
 		}
 
 		analytics = data;
-        (data)
+		(data)
 		calculateMetrics();
 		loading = false;
-	});
+	}
+
 
 	function calculateMetrics() {
 		if (!analytics || analytics.length === 0) return;
@@ -58,6 +55,8 @@
 				? Math.round(totalDuration / totalSitesWithDuration)
 				: 0;
 	}
+
+	onMount(load);
 </script>
 
 <div class="space-y-6">
@@ -116,28 +115,3 @@
 	{/if}
     </div>
 </div>
-
-<!-- Toasts -->
-<Toast.Group {toaster} position="bottom-right">
-	{#snippet children(toast)}
-		<Toast
-			{toast}
-			class="bg-surface-900 border border-surface-700 text-on-surface rounded-lg shadow-md flex items-start gap-3 p-4 min-w-[280px]"
-		>
-			{#if toast.type === 'success'}
-				<CheckCircle2 class="text-success-400 w-5 h-5 mt-1" />
-			{:else if toast.type === 'warning'}
-				<AlertTriangle class="text-warning-400 w-5 h-5 mt-1" />
-			{/if}
-			<Toast.Message class="flex-1">
-				<Toast.Title class="font-semibold">{toast.title}</Toast.Title>
-				{#if toast.description}
-					<Toast.Description class="text-sm opacity-90 mt-1">
-						{toast.description}
-					</Toast.Description>
-				{/if}
-			</Toast.Message>
-			<Toast.CloseTrigger class="ml-2 text-surface-400 hover:text-white transition" />
-		</Toast>
-	{/snippet}
-</Toast.Group>

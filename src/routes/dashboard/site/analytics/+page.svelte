@@ -1,16 +1,15 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { selectedSite } from '$lib/stores/site';
-	import { CMS } from '$lib/cms';
+	import { store_selectedSite } from '$lib/stores/site';
+	import { CMS } from '$lib/supabase/cms';
 	import Card from '$lib/components/StatsCard.svelte';
 	import LineChart from '$lib/components/LineChart.svelte';
 	import BarChart from '$lib/components/BarChart.svelte';
-	import { Toast, createToaster } from '@skeletonlabs/skeleton-svelte';
+	import { showToast } from '$lib/stores/toast';
 	import { CheckCircle2, AlertTriangle, Globe } from '@lucide/svelte';
     import PageHeader from '$components/PageHeader.svelte';
 
-	const toaster = createToaster({});
-	let analytics = null;
+	let analytics : any = {};
 	let loading = true;
 
 	let totalVisitors = 0;
@@ -20,22 +19,16 @@
 
 	// load analytics for current site
 	onMount(async () => {
-		if (!$selectedSite) {
-			toaster.warning({
-				title: 'No site selected',
-				description: 'Please select a site first.'
-			});
+		if (!$store_selectedSite) {
+			showToast('warning','No site selected', 'Please select a site first')
 			loading = false;
 			return;
 		}
 
-		const { data, error } = await CMS.Sites.analytics($selectedSite);
+		const { data, error } = await CMS.Sites.analytics($store_selectedSite);
 
 		if (error) {
-			toaster.warning({
-				title: 'Analytics Error',
-				description: error
-			});
+			showToast('warning', 'Analytics error', error)
 			loading = false;
 			return;
 		}

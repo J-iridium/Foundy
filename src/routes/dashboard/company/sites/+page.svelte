@@ -1,8 +1,9 @@
 <script lang="ts">
 	import PageHeader from '$components/PageHeader.svelte';
 	import { onMount } from 'svelte';
-	import { CMS } from '$lib/cms';
-	import { Pagination, Toast, createToaster } from '@skeletonlabs/skeleton-svelte';
+	import { CMS } from '$lib/supabase/cms';
+	import { Pagination } from '@skeletonlabs/skeleton-svelte';
+	import { showToast } from '$lib/stores/toast';
 	import {
 		Globe,
 		Key,
@@ -15,7 +16,7 @@
 	} from '@lucide/svelte';
 
 	// Local toaster
-	const toaster = createToaster({});
+	// const toaster = createToaster({});
 
 	type Site = {
 		id: string;
@@ -60,7 +61,7 @@
 	async function fetchSites() {
 		const { data, error } = await CMS.Sites.list();
 		if (error) {
-			toaster.warning({ title: 'Error loading sites', description: error });
+			showToast('warning', 'Error loading sites', error)
 			return;
 		}
 		sites = data;
@@ -71,41 +72,31 @@
 		if (!newDomain.trim()) return;
 		const { data, error } = await CMS.Sites.create({ name: '', domain: newDomain });
 		if (error) {
-			toaster.warning({ title: 'Error creating site', description: error });
+			showToast('warning', 'Error creating sites', error)
 			return;
 		}
 		fetchSites();
-		// sites = [...sites, data];
-		// console.log(sites)
 		newDomain = '';
 		showModal = false;
-		toaster.success({
-			title: 'Site Added',
-			description: 'New site created successfully!'
-		});
+		showToast('success', 'Site added', 'New site created successfully!');
 	}
 
 	async function revealToken(index: number, site_id: string) {
 		const { data, error } = await CMS.Tokens.get(site_id);
 		if (error) {
-			toaster.warning({ title: 'Token Error', description: error });
+			showToast('warning', 'Token error', error)
 			return;
 		}
 		sites[index].jwt_token = data.token.token;
 		sites = [...sites];
-		toaster.success({
-			title: 'Token Revealed',
-			description: `JWT token for ${sites[index].domain} loaded successfully`
-		});
+
+		showToast('success', 'Token revealed', `JWT token for ${sites[index].domain} loaded successfully`);
 	}
 
 	async function getCompanyTier() {
 		const { data, error } = await CMS.Company.get();
 		if (error) {
-			toaster.error({
-				title: "Couldn't get company",
-				description: error
-			});
+			showToast('warning', 'Couldn\'t get company', error)
 			return;
 		}
 		company_tier = data.plan as Tier;
@@ -122,16 +113,13 @@
 		const { error } = await CMS.Sites.delete(siteToDelete.id);
 
 		if (error) {
-			toaster.warning({ title: 'Delete Failed', description: error });
+			showToast('warning', 'Delete Failed', error)
 			return;
 		}
 
 		sites = sites.filter((s) => s.id !== siteToDelete?.id);
 		deleteModal = false;
-		toaster.success({
-			title: 'Site Deleted',
-			description: `${siteToDelete.domain} has been removed.`
-		});
+		showToast('success', 'Site Deleted',  `${siteToDelete.domain} has been removed.`)
 	}
 
 	$: totalPages = Math.ceil(sites.length / perPage);
@@ -349,28 +337,4 @@
 </div>
 
 <!-- Toasts -->
-<Toast.Group {toaster} position="bottom-right">
-	{#snippet children(toast)}
-		<Toast
-			{toast}
-			class="bg-surface-900 border border-surface-700 text-on-surface rounded-lg shadow-md flex items-start gap-3 p-4 min-w-[280px]"
-		>
-			{#if toast.type === 'success'}
-				<CheckCircle2 class="text-success-400 w-5 h-5 mt-1" />
-			{:else if toast.type === 'warning'}
-				<AlertTriangle class="text-warning-400 w-5 h-5 mt-1" />
-			{/if}
 
-			<Toast.Message class="flex-1">
-				<Toast.Title class="font-semibold">{toast.title}</Toast.Title>
-				{#if toast.description}
-					<Toast.Description class="text-sm opacity-90 mt-1">
-						{toast.description}
-					</Toast.Description>
-				{/if}
-			</Toast.Message>
-
-			<Toast.CloseTrigger class="ml-2 text-surface-400 hover:text-white transition" />
-		</Toast>
-	{/snippet}
-</Toast.Group>

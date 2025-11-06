@@ -1,13 +1,11 @@
 <!-- TODO: FIX token rotation! -->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { selectedSite } from '$lib/stores/site';
-	import { CMS } from '$lib/cms';
-	import { Toast, createToaster } from '@skeletonlabs/skeleton-svelte';
+	import { store_selectedSite } from '$lib/stores/site';
+	import { CMS } from '$lib/supabase/cms';
 	import { Globe, Key, RefreshCw, Save, CheckCircle2, AlertTriangle } from '@lucide/svelte';
     import PageHeader from '$components/PageHeader.svelte';
-
-	const toaster = createToaster({});
+	import { showToast } from '$lib/stores/toast';
 
 	let site: any = null;
 	let loading = true;
@@ -19,11 +17,8 @@
 
 	// Fetch current site details
 	onMount(async () => {
-		if (!$selectedSite) {
-			toaster.warning({
-				title: 'No site selected',
-				description: 'Please select a site first.'
-			});
+		if (!$store_selectedSite) {
+			showToast('warning', 'No site selected', 'Please select a site first.')
 			loading = false;
 			return;
 		}
@@ -31,12 +26,9 @@
 	});
 
 	async function fetchSite() {
-		const { data, error } = await CMS.Sites.get($selectedSite);
+		const { data, error } = await CMS.Sites.get($store_selectedSite);
 		if (error) {
-			toaster.warning({
-				title: 'Error loading site',
-				description: error
-			});
+			showToast('warning', 'Error loading site', error)
 			loading = false;
 			return;
 		}
@@ -48,73 +40,52 @@
 	// Reveal JWT token
 	async function revealToken() {
 		revealing = true;
-		const { data, error } = await CMS.Tokens.get($selectedSite);
+		const { data, error } = await CMS.Tokens.get($store_selectedSite);
 		revealing = false;
 
 		if (error) {
-			toaster.warning({
-				title: 'Token Error',
-				description: error
-			});
+			showToast('warning', 'Token Error', error)
 			return;
 		}
 		jwtToken = data.token.token;
-		toaster.success({
-			title: 'Token Retrieved',
-			description: 'The site token has been revealed.'
-		});
+		showToast('success', 'Token Retrieved', 'The site token has been revealed.')
 	}
 
 	// Rotate JWT token
 	async function rotateToken() {
 		rotating = true;
-		const { data, error } = await CMS.Tokens.rotate($selectedSite);
+		const { data, error } = await CMS.Tokens.rotate($store_selectedSite);
 		rotating = false;
 
 		if (error) {
-			toaster.warning({
-				title: 'Token Rotation Failed',
-				description: error
-			});
+			showToast('warning', 'Token Rotation Failed', error)
 			return;
 		}
 
 		jwtToken = data.token.token;
-		toaster.success({
-			title: 'Token Rotated',
-			description: 'A new JWT token has been generated.'
-		});
+		showToast('success', 'Token Rotated', 'A new JWT token has been generated.')
 	}
 
 	// Update domain
 	async function saveChanges() {
 		if (!newDomain.trim()) {
-			toaster.warning({
-				title: 'Invalid Domain',
-				description: 'Please enter a valid domain name.'
-			});
+			showToast('warning', 'Invalid Domain', 'Please enter a valid domain name.')
 			return;
 		}
 		saving = true;
 
-		const { data, error } = await CMS.Sites.update($selectedSite, {
+		const { data, error } = await CMS.Sites.update($store_selectedSite, {
 			domain: newDomain
 		});
 
 		saving = false;
 		if (error) {
-			toaster.warning({
-				title: 'Save Failed',
-				description: error
-			});
+			showToast('warning', 'Save Failed', error)
 			return;
 		}
 
 		site = data;
-		toaster.success({
-			title: 'Domain Updated',
-			description: `Domain changed to ${newDomain}.`
-		});
+		showToast('success', 'Domain Updated', `Domain changed to ${newDomain}`)
 	}
 </script>
 
@@ -212,28 +183,3 @@
 		{/if}
 	</div>
 </div>
-
-<!-- Toasts -->
-<Toast.Group {toaster} position="bottom-right">
-	{#snippet children(toast)}
-		<Toast
-			{toast}
-			class="bg-surface-900 border border-surface-700 text-on-surface rounded-lg shadow-md flex items-start gap-3 p-4 min-w-[280px]"
-		>
-			{#if toast.type === 'success'}
-				<CheckCircle2 class="text-success-400 w-5 h-5 mt-1" />
-			{:else if toast.type === 'warning'}
-				<AlertTriangle class="text-warning-400 w-5 h-5 mt-1" />
-			{/if}
-			<Toast.Message class="flex-1">
-				<Toast.Title class="font-semibold">{toast.title}</Toast.Title>
-				{#if toast.description}
-					<Toast.Description class="text-sm opacity-90 mt-1">
-						{toast.description}
-					</Toast.Description>
-				{/if}
-			</Toast.Message>
-			<Toast.CloseTrigger class="ml-2 text-surface-400 hover:text-white transition" />
-		</Toast>
-	{/snippet}
-</Toast.Group>
