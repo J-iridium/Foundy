@@ -8,8 +8,7 @@
 	export let iconButton: Component = Nut;
 	export let textButton: string = "this is a button";
     export let isDisabled: boolean = false;
-	export let action: () => void;
-    console.log(action, iconButton)
+	export let action : () => void | undefined;
 </script>
 
 <div class="p-3 border-b border-surface-700 flex items-center justify-between">
