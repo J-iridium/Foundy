@@ -16,10 +16,7 @@
       GlobeIcon,
       CircleX,
       CheckCircle2,
-
       AlertTriangle
-
-
     } from '@lucide/svelte';
     
     const companyLinkSidebar = {
@@ -44,7 +41,6 @@
   let toaster = $store_toast;
   
 	let { children } = $props();
-	// let anchorSidebar : string = 'btn justify-start px-2 w-full';
 	let sitesPromise: Promise<any[]>;
 
 	async function fetchSites() {

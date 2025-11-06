@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { CMS } from '$lib/supabase/cms'; // <-- our client SDK
+	import { CMS } from '$lib/supabase/cms';
 	import Card from './Card.svelte';
 	import { PlusCircle, X, Package } from '@lucide/svelte';
 	import { showToast } from '$lib/stores/toast';

@@ -230,6 +230,23 @@ export class CMSClient {
 			return { data: data.data, error: null };
 		},
 
+		update: async (payload) => {
+			try {
+				const res = await fetch(`${this.base}/companies/id`, {
+					method: 'PATCH',
+					credentials: 'include',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(payload)
+				});
+	
+				const data = await res.json();
+				if (!res.ok) return { data: null, error: data.error || 'Update failed' };
+				return { data: data.data, error: null };
+			} catch (err) {
+				return { data: null, error: err.message };
+			}
+		},
+
 		// -------------------------------------------------------------------
 		//  COMPANY ANALYTICS (aggregates all site analytics)
 		// -------------------------------------------------------------------
