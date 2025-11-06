@@ -7,16 +7,16 @@
 	import { CheckCircle2, AlertTriangle, Building2 } from '@lucide/svelte';
     import PageHeader from '$components/PageHeader.svelte';
 	import { showToast } from '$lib/stores/toast';
+	import type { Analytics } from '../../../../types/db';
 
-
-	let analytics : any = [];
-	let loading = true;
+	let analytics : Analytics[] = [];
+	let loading : boolean= true;
 
 	// Aggregate stats for company dashboard
-	let totalVisitors = 0;
-	let totalPageViews = 0;
-	let avgSessionDuration = 0;
-	let totalDiskUsage = 0;
+	let totalVisitors : number  = 0;
+	let totalPageViews : number = 0;
+	let avgSessionDuration : number = 0;
+	let totalDiskUsage : number = 0;
 
 	async function load() {
 		const { data, error } = await CMS.Company.analytics();

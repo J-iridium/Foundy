@@ -105,28 +105,3 @@
 	{/if}
 	</div>
 </div>
-
-<!-- Toasts -->
-<Toast.Group {toaster} position="bottom-right">
-	{#snippet children(toast)}
-		<Toast
-			{toast}
-			class="bg-surface-900 border border-surface-700 text-on-surface rounded-lg shadow-md flex items-start gap-3 p-4 min-w-[280px]"
-		>
-			{#if toast.type === 'success'}
-				<CheckCircle2 class="text-success-400 w-5 h-5 mt-1" />
-			{:else if toast.type === 'warning'}
-				<AlertTriangle class="text-warning-400 w-5 h-5 mt-1" />
-			{/if}
-			<Toast.Message class="flex-1">
-				<Toast.Title class="font-semibold">{toast.title}</Toast.Title>
-				{#if toast.description}
-					<Toast.Description class="text-sm opacity-90 mt-1">
-						{toast.description}
-					</Toast.Description>
-				{/if}
-			</Toast.Message>
-			<Toast.CloseTrigger class="ml-2 text-surface-400 hover:text-white transition" />
-		</Toast>
-	{/snippet}
-</Toast.Group>

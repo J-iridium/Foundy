@@ -1,0 +1,1 @@
+export type Plan = "starter" | "pro" | "business" | "agency_basic" | "agency_plus" | "agency_max";
