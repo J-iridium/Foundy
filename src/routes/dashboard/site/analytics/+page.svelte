@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { store_selectedSite } from '$lib/stores/site';
+	import { store_selectedSite } from '$lib/stores';
 	import { CMS } from '$lib/supabase/cms';
 	import Card from '$lib/components/StatsCard.svelte';
 	import LineChart from '$lib/components/LineChart.svelte';
 	import BarChart from '$lib/components/BarChart.svelte';
-	import { showToast } from '$lib/stores/toast';
+	import { showToast } from '$lib/stores/toast.store';
 	import { CheckCircle2, AlertTriangle, Globe } from '@lucide/svelte';
     import PageHeader from '$components/PageHeader.svelte';
 

@@ -2,10 +2,10 @@
 	  import favicon from '$lib/assets/favicon.svg';
     import { Navigation } from '@skeletonlabs/skeleton-svelte';
     import { CMS } from '$lib/supabase/cms';
-    import { store_selectedSite } from '$lib/stores/site';
+    import { store_selectedSite } from '$lib/stores/site.store';
     import { page } from '$app/stores';
     import { Toast } from '@skeletonlabs/skeleton-svelte';
-    import { store_toast } from '$lib/stores/toast';
+    import { store_toast } from '$lib/stores';
     import {
       BarChart3,
       ImageIcon,
@@ -37,6 +37,12 @@
 			{ label: 'Media', href: '/dashboard/site/content/media', icon: ImageIcon },
 		],
 	};
+
+  // src/routes/+layout.server.ts
+  export const load = ({ locals }) => ({
+    user: locals.user
+  });
+
   
   let toaster = $store_toast;
   

@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { CMS } from '$lib/supabase/cms';
 	import { Save, Building2, Layers, ArrowUpRight, UploadIcon, ImageIcon } from '@lucide/svelte';
-	import { showToast } from '$lib/stores/toast';
+	import { showToast } from '$lib/stores';
     import PageHeader from '$components/PageHeader.svelte';
 	
     

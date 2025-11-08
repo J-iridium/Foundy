@@ -3,10 +3,10 @@
 	import { CMS } from '$lib/supabase/cms';
 	import Card from './Card.svelte';
 	import { PlusCircle, X, Package } from '@lucide/svelte';
-	import { showToast } from '$lib/stores/toast';
+	import { showToast } from '$lib/stores';
 	import ModalAdd from './ModalAdd.svelte';
 	import ModalPreview from './ModalPreview.svelte';
-	import { store_selectedSite } from '$lib/stores/site';
+	import { store_selectedSite } from '$lib/stores/site.store';
 	import ModalEdit from './ModalEdit.svelte';
     import PageHeader from '$components/PageHeader.svelte';
 

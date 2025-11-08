@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import { CMS } from '$lib/supabase/cms';
 	import { Pagination } from '@skeletonlabs/skeleton-svelte';
-	import { showToast } from '$lib/stores/toast';
+	import { showToast } from '$lib/stores';
 	import {
 		Globe,
 		Key,

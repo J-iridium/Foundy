@@ -1,11 +1,11 @@
 <!-- TODO: FIX token rotation! -->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { store_selectedSite } from '$lib/stores/site';
+	import { store_selectedSite } from '$lib/stores/site.store';
 	import { CMS } from '$lib/supabase/cms';
 	import { Globe, Key, RefreshCw, Save, CheckCircle2, AlertTriangle } from '@lucide/svelte';
     import PageHeader from '$components/PageHeader.svelte';
-	import { showToast } from '$lib/stores/toast';
+	import { showToast } from '$lib/stores';
 
 	let site: any = null;
 	let loading = true;
