@@ -1,5 +1,4 @@
 // Client-side SDK for your /api/v2/app endpoints using cookie-based JWT auth.
-
 export class CMSClient {
 	private base: string;
 	private version : number;

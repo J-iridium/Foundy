@@ -2,21 +2,17 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import jwt from 'jsonwebtoken';
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
 import { SUPABASE_SERVICE_ROLE_KEY, SUPABASE_JWT_SECRET } from '$env/static/private';
+import type { SessionUser } from '$types/tokens';
 
-export type UserJwtClaims = {
-    user_id : string;
-    company_id: string;
-    role: 'owner' | 'editor' | 'viewer';
-};
 
 export type SiteJwtClaims = {
-    company_id : string;
-    site_id : string;
+    companyId : string;
+    siteId : string;
     domain : string;
     permissions: string[];
 };
 
-export function issueUserJWT(claims : UserJwtClaims, expiredIn ='1h') {
+export function issueUserJWT(claims : SessionUser, expiredIn ='1h') {
     return jwt.sign(claims, SUPABASE_JWT_SECRET, { expiresIn: expiredIn, issuer: 'foundy-cms'});
 }
 
