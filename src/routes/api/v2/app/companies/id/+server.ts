@@ -10,9 +10,9 @@ export const GET: RequestHandler = withUserAuth(async ({ auth, supabase, request
   const { data, error } = await supabase
     .from('companies')
     .select('*')
-    .eq('id', auth.company_id)
+    .eq('id', auth.companyId)
     .single();
-
+  console.log(auth, data)
   if (error) return fail(404, 'Company not found', error);
   return ok(data);
 });
@@ -27,7 +27,7 @@ export const PATCH: RequestHandler = withUserAuth(async ({ auth, supabase, reque
   const { data, error } = await supabase
     .from('companies')
     .update(body)
-    .eq('id', auth.company_id)
+    .eq('id', auth.companyId)
     .select('*')
     .single();
 

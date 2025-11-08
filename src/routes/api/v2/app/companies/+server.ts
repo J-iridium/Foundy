@@ -3,11 +3,11 @@ import { ok, fail } from '$lib/server/http';
 import { HttpError } from '$lib/server/auth';
 
 export const GET = withUserAuth(async ({ auth, supabase }) => {
-  const { company_id } = auth;
+  const { companyId } = auth;
   const { data, error } = await supabase
     .from('companies')
     .select('*')
-    .eq('id', company_id)
+    .eq('id', companyId)
     .single();
   if (error) return fail(400, 'Failed to fetch company', error);
   return ok(data);
@@ -22,7 +22,7 @@ export const POST = withUserAuth(async ({ auth, supabase, request }) => {
 
   const { data, error } = await supabase
     .from('companies')
-    .insert([{ name, domain, owner_id: auth.user_id }])
+    .insert([{ name, domain, owner_id: auth.userId }])
     .select('*')
     .single();
 

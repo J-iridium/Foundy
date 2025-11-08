@@ -32,7 +32,7 @@ export const DELETE = withUserAuth(async ({ auth, supabase, params }) => {
 		.delete()
 		.eq('site_id', site_id)
 		.eq('name', name)
-		.eq('company_id', auth.company_id);
+		.eq('company_id', auth.companyId);
 
 	if (error) return fail(400, 'Failed to delete content', error);
 	return ok({ success: true });

@@ -14,7 +14,6 @@ export const GET = withUserAuth(async ({ auth, supabase, params, request }) => {
 		.from('content')
 		.select('*')
 		.eq('site_id', site_id)
-		// .eq('company_id', auth.company_id) // optional, if you want to scope by company
 		.order('created_at', { ascending: false });
 
 	if (type) {

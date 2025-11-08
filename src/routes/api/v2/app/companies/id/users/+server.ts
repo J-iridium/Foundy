@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = withUserAuth(async ({ auth, supabase, request , params}) => {
   const { id } = params;
-  if (auth.company_id !== id) throw new HttpError(403, 'Forbidden');
+  if (auth.companyId !== id) throw new HttpError(403, 'Forbidden');
 
   const { data, error } = await supabase
     .from('users')

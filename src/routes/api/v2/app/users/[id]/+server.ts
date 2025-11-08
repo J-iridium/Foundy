@@ -5,14 +5,14 @@ import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = withUserAuth(async ({ auth, supabase, request,params }) => {
   const { id } = params;
-  if (auth.user_id !== id && auth.role !== 'owner')
+  if (auth.userId !== id && auth.role !== 'owner')
     throw new HttpError(403, 'Forbidden');
 
   const { data, error } = await supabase
     .from('users')
     .select('*')
     .eq('id', id)
-    .eq('company_id', auth.company_id)
+    .eq('company_id', auth.companyId)
     .single();
 
   if (error) return fail(404, 'User not found', error);
@@ -21,7 +21,7 @@ export const GET: RequestHandler = withUserAuth(async ({ auth, supabase, request
 
 export const PATCH: RequestHandler = withUserAuth(async ({ auth, supabase, request , params}) => {
   const { id } = params;
-  if (auth.user_id !== id && auth.role !== 'owner')
+  if (auth.userId !== id && auth.role !== 'owner')
     throw new HttpError(403, 'Forbidden');
 
   const body = await request.json();
@@ -29,7 +29,7 @@ export const PATCH: RequestHandler = withUserAuth(async ({ auth, supabase, reque
     .from('users')
     .update(body)
     .eq('id', id)
-    .eq('company_id', auth.company_id)
+    .eq('company_id', auth.companyId)
     .select('*')
     .single();
 

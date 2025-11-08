@@ -9,7 +9,7 @@ export const GET: RequestHandler = withUserAuth(async ({ auth, supabase, params 
 		.from('sites')
 		.select('*')
 		.eq('id', id)
-		.eq('company_id', auth.company_id)
+		.eq('company_id', auth.companyId)
 		.single();
 
 	if (error || !data) return fail(404, 'Site not found', error);
@@ -26,7 +26,7 @@ export const PATCH: RequestHandler = withUserAuth(async ({ auth, supabase, reque
 		.from('sites')
 		.update(body)
 		.eq('id', id)
-		.eq('company_id', auth.company_id)
+		.eq('company_id', auth.companyId)
 		.select('*')
 		.single();
 
@@ -46,7 +46,7 @@ export const DELETE: RequestHandler = withUserAuth(async ({ auth, supabase, para
 		.from('sites')
 		.select('id')
 		.eq('id', id)
-		.eq('company_id', auth.company_id)
+		.eq('company_id', auth.companyId)
 		.single();
 
 	if (findError || !site) return fail(404, 'Site not found', findError);
@@ -56,7 +56,7 @@ export const DELETE: RequestHandler = withUserAuth(async ({ auth, supabase, para
 		.from('sites')
 		.delete()
 		.eq('id', id)
-		.eq('company_id', auth.company_id);
+		.eq('company_id', auth.companyId);
 
 	if (deleteError) return fail(400, 'Failed to delete site', deleteError);
 

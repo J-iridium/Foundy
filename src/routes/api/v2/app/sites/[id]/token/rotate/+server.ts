@@ -16,7 +16,7 @@ export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, params
 		.from('sites')
 		.select('id, domain, company_id')
 		.eq('id', site_id)
-		.eq('company_id', auth.company_id)
+		.eq('company_id', auth.companyId)
 		.single();
 
 	if (siteError || !site) return fail(404, 'Site not found', siteError);

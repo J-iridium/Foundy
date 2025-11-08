@@ -4,14 +4,14 @@ import { HttpError } from '$lib/server/auth';
 import type { RequestHandler } from './$types';
 import { SUPABASE_JWT_SECRET } from '$env/static/private';
 import jwt from 'jsonwebtoken'
-import { SiteTokens } from '$lib/supabase';
+// import { SiteTokens } from '$lib/supabase';
 
 export const GET: RequestHandler = withUserAuth(async ({ auth, supabase }) => {
-  const { company_id } = auth;
+  const { companyId } = auth;
   const { data, error } = await supabase
     .from('sites')
     .select('*')
-    .eq('company_id', company_id);
+    .eq('company_id', companyId);
   if (error) return fail(400, 'Failed to fetch sites', error);
   return ok(data);
 });
@@ -26,11 +26,10 @@ export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, reques
   // 1. Create site
   const { data: site, error: siteError } = await supabase
     .from('sites')
-    .insert({ company_id: auth.company_id, name, domain })
+    .insert({ company_id: auth.companyId, name, domain })
     .select()
     .single();
   	
-  (site.id)
   if (siteError) return fail(500, 'Failed to create site', siteError);
   // 2. Create analytics
 
@@ -40,14 +39,13 @@ export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, reques
   .select()
   .single();
   
-  ('y')
   if (analyticsError) return fail(500, 'Failed to create analytics', analyticsError);
 
   // 3. Create site token
   const token = jwt.sign(
     {
-      company_id: site.company_id,
-      site_id: site.id,
+      companyId: site.companyId,
+      siteId: site.id,
       domain: site.domain,
       permissions: ['read:content'],
     },
@@ -61,7 +59,6 @@ export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, reques
     .select()
     .single();
 
-  ('z', tokenError)
   if (tokenError) return fail(500, 'Failed to create site token', tokenError);
   ('COMPLETE!')
   return ok({ site, analytics, token });
