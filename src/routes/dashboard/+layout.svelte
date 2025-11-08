@@ -6,6 +6,8 @@
     import { page } from '$app/stores';
     import { Toast } from '@skeletonlabs/skeleton-svelte';
     import { store_toast } from '$lib/stores';
+    import { can } from '$lib/permissions'; // or wherever your can() function lives
+
     import {
       BarChart3,
       ImageIcon,
@@ -38,11 +40,8 @@
 		],
 	};
 
-  // src/routes/+layout.server.ts
-  export const load = ({ locals }) => ({
-    user: locals.user
-  });
-
+  
+  const user = $page.data.user
   
   let toaster = $store_toast;
   
@@ -91,7 +90,7 @@
       alt="jiridium logo"
       class="w-full h-16 object-contain rounded-lg bg-surface-850 p-2"
     /> -->
-	<svg xmlns="http://www.w3.org/2000/svg" width="200" height="64" viewBox="0 0 256 64" role="img" aria-label="Foundy logo">
+	  <svg xmlns="http://www.w3.org/2000/svg" width="200" height="64" viewBox="0 0 256 64" role="img" aria-label="Foundy logo">
 		<style>
 			/* Uses your Skeleton theme tokens if present; falls back to nice defaults */
 			:root {
@@ -132,6 +131,7 @@
   <!-- Scrollable Content -->
   <Navigation.Content class="overflow-y-auto px-2 py-3">
     <!-- COMPANY NAV -->
+    {#if can(user.role, 'settings')}
     {#each Object.entries(companyLinkSidebar) as [category, links]}
       <Navigation.Group>
         <Navigation.Label class="text-xs uppercase tracking-wide text-surface-400 mt-4 mb-2 pl-3">
@@ -159,7 +159,7 @@
         </Navigation.Menu>
       </Navigation.Group>
     {/each}
-
+    {/if}
     <!-- SITE SELECT -->
     {#await sitesPromise then sites}
       <label class="block mt-6 px-3">
