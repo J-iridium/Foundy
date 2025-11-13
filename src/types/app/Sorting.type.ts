@@ -1,0 +1,1 @@
+export type Sorting = 'oldest' | 'newest' | 'az' | 'za';
