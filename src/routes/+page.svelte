@@ -7,7 +7,7 @@
 
   // Configure SDK once at app start
   foundy.configure({
-    jwtToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaXRlSWQiOiIzY2M0MGJiYy0yYjcxLTRhZGMtOTYwNC0wY2U1MjY1ZjExNmMiLCJkb21haW4iOiJsb2NhbGhvc3Q6NTE3MyIsInBlcm1pc3Npb25zIjpbInJlYWQ6Y29udGVudCJdLCJpYXQiOjE3NjMwNTA3ODQsImV4cCI6MTc5NDU4Njc4NH0.gEo8liJIL-Snf02nZZfPct0iKyhfXu96jTgPDK8z8yI'
+    jwtToken: ' eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaXRlSWQiOiJkNWRjOWQyOC05MmJkLTRjM2QtOTI4YS0yMjRlMWVjNzBhZTAiLCJkb21haW4iOiJmb3VuZHktb3BhbC52ZXJjZWwuYXBwIiwicGVybWlzc2lvbnMiOlsicmVhZDpjb250ZW50Il0sImlhdCI6MTc2MzA1MTM4OSwiZXhwIjoxNzk0NTg3Mzg5fQ.xb-BlsS8Qho_m59dQb1NOKVYs8rc3CMtopIskoU8Ki8'
   });
 
   onMount(async () => {
