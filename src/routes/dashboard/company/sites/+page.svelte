@@ -2,8 +2,8 @@
 	import PageHeader from '$components/PageHeader.svelte';
 	import { onMount } from 'svelte';
 	import { CMS } from '$lib/supabase/cms';
-	import { Pagination } from '@skeletonlabs/skeleton-svelte';
 	import { showToast } from '$lib/stores';
+	import type { Sorting } from '$types/app';
 	import {
 		Globe,
 		Key,
@@ -14,9 +14,7 @@
 		AlertTriangle,
 		Building2
 	} from '@lucide/svelte';
-
-	// Local toaster
-	// const toaster = createToaster({});
+    import type { Plan } from '$types/db';
 
 	type Site = {
 		id: string;
@@ -25,30 +23,33 @@
 		created_at?: string;
 	};
 
-	type Tier =
-		| 'starter'
-		| 'pro'
-		| 'business'
-		| 'agency-basic'
-		| 'agency-pro'
-		| 'agency-max';
 
 	const max_pages = {
-		starter: 1,
-		pro: 3,
-		business: 5,
+		'starter': 1,
+		'pro': 3,
+		'business': 5,
 		'agency-basic': 10,
 		'agency-pro': 30,
 		'agency-max': Infinity
 	};
 
-	let company_tier: Tier;
+	let company_tier: Plan;
 	let sites: Site[] = [];
 	let loading = true;
 
-	// Pagination
-	let currentPage = 1;
-	const perPage = 6;
+
+	let sortOption : Sorting = 'oldest';
+	$: sortedSites = [...sites].sort((a, b) => {
+		// @ts-ignore
+		if (sortOption === 'az') return (a.domain || '').localeCompare(b.domain || '');
+		// @ts-ignore
+		if (sortOption === 'za') return (b.domain || '').localeCompare(a.domain || '');
+		// @ts-ignore
+		if (sortOption === 'newest') return new Date(a.created_at || '').getTime() - new Date(b.created_at || '').getTime();
+		// default oldest
+		return new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime();
+	});
+
 
 	let showModal = false;
 	let newDomain = '';
@@ -70,9 +71,9 @@
 
 	async function addSite() {
 		if (!newDomain.trim()) return;
-		const { data, error } = await CMS.Sites.create({ name: '', domain: newDomain });
+		const { error } = await CMS.Sites.create({ domain: newDomain });
 		if (error) {
-			showToast('warning', 'Error creating sites', error)
+			showToast('warning', 'Error creating sites', error.message)
 			return;
 		}
 		fetchSites();
@@ -87,10 +88,8 @@
 			showToast('warning', 'Token error', error)
 			return;
 		}
-		sites[index].jwt_token = data.token.token;
-		sites = [...sites];
-
-		showToast('success', 'Token revealed', `JWT token for ${sites[index].domain} loaded successfully`);
+		sortedSites[index].jwt_token = data.token.token;
+		showToast('success', 'Token revealed', `JWT token for ${sortedSites[index].domain} loaded successfully`);
 	}
 
 	async function getCompanyTier() {
@@ -99,7 +98,7 @@
 			showToast('warning', 'Couldn\'t get company', error)
 			return;
 		}
-		company_tier = data.plan as Tier;
+		company_tier = data.plan as Plan;
 	}
 
 	function openDeleteModal(site: Site) {
@@ -122,12 +121,6 @@
 		showToast('success', 'Site Deleted',  `${siteToDelete.domain} has been removed.`)
 	}
 
-	$: totalPages = Math.ceil(sites.length / perPage);
-	$: paginatedSites = sites.slice(
-		(currentPage - 1) * perPage,
-		currentPage * perPage
-	);
-
 	onMount(fetchSites);
 	onMount(getCompanyTier);
 </script>
@@ -136,12 +129,15 @@
 <div class="space-y-6">
 	<!-- Header -->
 	<PageHeader 
-	 	title="Company Sites" 
-	 	description="Manage all connected domains and their JWT access tokens."
-		action={() => (showModal = sites.length < max_pages[company_tier])}
+	 	title="Company Sites"
+		description="Manage all connected domains and their JWT access tokens."
 		iconButton={PlusCircle}
 		iconTitle={Building2}
 		textButton="Add Site"
+		action={() => (showModal = sites.length < max_pages[company_tier])}
+		showSort={true}
+		sortValue={sortOption}
+		onSortChange={(value : String) => {(sortOption as String) = value}}
 	/> 
 	
 
@@ -162,7 +158,7 @@
 		</div>
 	{:else}
 		<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-			{#each paginatedSites as site, i}
+			{#each sortedSites as site, i}
 				<div
 					class="relative rounded-xl border border-surface-700 bg-surface-800 overflow-hidden hover:border-primary-700 transition"
 				>
@@ -215,7 +211,7 @@
 			{/each}
 		</div>
 
-		<!-- Pagination -->
+		<!-- Pagination
 		{#if totalPages > 1}
 			<div class="flex justify-center mt-8">
 				<Pagination
@@ -226,7 +222,7 @@
 					size="sm"
 				/>
 			</div>
-		{/if}
+		{/if} -->
 	{/if}
 	</div>
 	<!-- Add Site Modal -->
@@ -335,6 +331,3 @@
 </div>
 {/if}
 </div>
-
-<!-- Toasts -->
-

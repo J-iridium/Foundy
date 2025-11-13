@@ -101,7 +101,7 @@
 				alt={item.data?.title || ''}
 				class="w-full h-40 object-cover border-b border-surface-700"
 			/>
-		{:else if type==='products' && item.data?.images?.length}
+		{:else if item.data?.images?.length == undefined}
 			<div
 			class="w-full h-40 object-cover border-b border-surface-700 flex items-center justify-center bg-surface-900 border-b border-surface-700 text-surface-400 text-sm"
 			>
