@@ -35,7 +35,6 @@
 	async function loadItems() {
 		if (!site_id || !type) return;
 		const { data, error } = await CMS.Content.listByType(site_id, type);
-		console.log(data)
 		if (error) {
 			console.error(error);
 			showToast('warning', 'Load Failed', 'Could not load content.')
@@ -146,15 +145,16 @@
 				</p>
 			</div>
 		{:else}
-			<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+			<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
 				{#each items as item (item.id)}
 					<Card
-						{item}
-						{type}
-						{onEdit}
-						{onDelete}
-						{onStatusChange}
-						on:preview={(e) => onPreview(e.detail)}
+					{item}
+					{type}
+					{onEdit}
+					{onDelete}
+					{onStatusChange}
+					on:preview={(e) => onPreview(e.detail)}
+					class="h-full"
 					/>
 				{/each}
 			</div>
