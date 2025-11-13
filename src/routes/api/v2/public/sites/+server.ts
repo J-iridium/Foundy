@@ -11,7 +11,6 @@ const supabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 export const GET: RequestHandler = async ({ url }) => {
 	try {
 		const site_id = url.searchParams.get('site_id');
-        console.log(site_id)
 		if (!site_id) {
 			return json({ success: false, error: 'Missing site_id' }, { status: 400 });
 		}
@@ -33,7 +32,6 @@ export const GET: RequestHandler = async ({ url }) => {
 			.select('token')
 			.eq('site_id', site_id)
 			.single();
-        console.log(tokenRecord)
 
 		if (tokenError || !tokenRecord) {
 			return fail(400, 'Failed to fetch site content');

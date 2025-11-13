@@ -181,9 +181,7 @@ export class CMSClient {
 
 			const data = await res.json();
 
-			console.log("x")
 			if (!res.ok) return { data: null, error: data.error };
-			console.log("z")
 			return { data: data.data, error: null };
 		},
 

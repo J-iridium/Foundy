@@ -12,7 +12,6 @@ export const GET: RequestHandler = withUserAuth(async ({ auth, supabase, request
     .select('*')
     .eq('id', auth.companyId)
     .single();
-  console.log(auth, data)
   if (error) return fail(404, 'Company not found', error);
   return ok(data);
 });

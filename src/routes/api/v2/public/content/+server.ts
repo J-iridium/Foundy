@@ -5,8 +5,7 @@ import type { RequestHandler } from './$types';
 export const GET: RequestHandler = withSiteAuth(async ({ auth, supabase, request }) => {
 	try {
 		// Optional: restrict content to the site associated with this token
-		const site_id = auth.site_id; // comes from decoded SiteJwtClaims
-		console.log(site_id)
+		const site_id = auth?.site_id; // comes from decoded SiteJwtClaims
 		// Optional query params
 		const url = new URL(request.url);
 		const type = url.searchParams.get('type');
@@ -29,7 +28,6 @@ export const GET: RequestHandler = withSiteAuth(async ({ auth, supabase, request
 		// }
 
 		const { data, error } = await query;
-		console.log(data)
 		if (error) return fail(400, 'Failed to fetch site content', error);
 		return ok(data);
 	} catch (err: any) {

@@ -77,7 +77,6 @@
 		} catch (e) {
 			uploading = false;
 			showToast('error', 'Upload Failed', 'An unexpected error occurred')
-			console.log(e)
 		}
 	}
 

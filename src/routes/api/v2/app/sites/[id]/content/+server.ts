@@ -33,7 +33,6 @@ export const POST = withUserAuth(async ({ auth, supabase, params, request }) => 
 		throw new HttpError(403, 'Insufficient permissions');
 
 	const body = await request.json();
-	console.log(body)
 	const { name, type, status = 'draft', data } = body;
 
 	if (!name || !type) throw new HttpError(400, 'Missing required fields');
@@ -43,7 +42,6 @@ export const POST = withUserAuth(async ({ auth, supabase, params, request }) => 
 		.insert([{ site_id, name, type, data, status }])
 		.select('*')
 		.single();
-	console.log(error)
 	if (error) return fail(400, 'Failed to create content', error);
 	return ok(inserted, 201);
 });
@@ -55,7 +53,6 @@ export const PATCH = withUserAuth(async ({ auth, supabase, params, request }) =>
 
 	const url = new URL(request.url);
 	const name = url.searchParams.get('name'); // ?name=<id or slug>
-	console.log(name, site_id)
 	if (!name) throw new HttpError(400, 'Missing ?name parameter');
 
 	const updates = await request.json();
