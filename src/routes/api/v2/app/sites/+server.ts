@@ -21,12 +21,13 @@ export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, reques
     throw new HttpError(403, 'Only owner can create a site');
 
   const body = await request.json();
-  const { name, domain } = body;
+  console.log(body)
+  const { domain } = body;
 
   // 1. Create site
   const { data: site, error: siteError } = await supabase
     .from('sites')
-    .insert({ company_id: auth.companyId, name, domain })
+    .insert({ company_id: auth.companyId, domain })
     .select()
     .single();
   	

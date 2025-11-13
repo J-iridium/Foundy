@@ -53,7 +53,7 @@ export class CMSClient {
 			return { data: data.data, error: null };
 		},
 
-		create: async (payload: { name: string; domain: string }) => {
+		create: async (payload: { domain: string }) => {
 			const res = await fetch(`${this.base}/sites`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
