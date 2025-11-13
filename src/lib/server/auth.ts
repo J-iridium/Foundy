@@ -32,16 +32,13 @@ export function extractBearer(req: Request): string {
 
 export function verifyUserJWT(token: string): SessionUser {
     const payload = jwt.verify(token, SUPABASE_JWT_SECRET!) as SessionUser;
-    
     validatePayloadKeys<SessionUser>(payload, ['userId', 'userName', 'companyId', 'role']);
-
     return payload;
 }
   
 export function verifySiteJWT(token: string): SiteJwtClaims {
     const payload = jwt.verify(token, SUPABASE_JWT_SECRET!) as SiteJwtClaims;
-
-    validatePayloadKeys<SiteJwtClaims>(payload, ['companyId', 'siteId', 'domain', 'permissions']);
+    validatePayloadKeys<SiteJwtClaims>(payload, ['siteId', 'domain', 'permissions']);
     return payload;
 }
 

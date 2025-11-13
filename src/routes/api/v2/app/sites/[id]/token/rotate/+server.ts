@@ -24,8 +24,7 @@ export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, params
 	// Generate new JWT
 	const token = jwt.sign(
 		{
-			company_id: site.company_id,
-			site_id: site.id,
+			siteId: site.id,
 			domain: site.domain,
 			permissions: ['read:content']
 		},
@@ -39,16 +38,14 @@ export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, params
 		.upsert(
 			{
 				site_id: site.id,
-				company_id: site.company_id,
-				domain: site.domain,
-				jwt_token: token,
-				rotated_at: new Date().toISOString()
+				token: token,
+				created_at: new Date().toISOString()
 			},
 			{ onConflict: 'site_id' }
 		)
 		.select()
 		.single();
-
+		console.log(updateError)
 	if (updateError) return fail(400, 'Failed to store new token', updateError);
 
 	return ok({
@@ -56,6 +53,5 @@ export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, params
 		rotated: true,
 		site_id: site.id,
 		domain: site.domain,
-		company_id: site.company_id
 	});
 });

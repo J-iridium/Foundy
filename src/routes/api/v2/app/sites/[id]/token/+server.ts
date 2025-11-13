@@ -24,28 +24,28 @@ export const GET: RequestHandler = withUserAuth(async ({ auth, supabase, request
 });
 
 
-export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, params }) => {
-  const { id } = params;
-  if (auth.role !== 'owner')
-    throw new HttpError(403, 'Only owner can create site token');
+// export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, params }) => {
+//   const { id } = params;
+//   if (auth.role !== 'owner')
+//     throw new HttpError(403, 'Only owner can create site token');
 
-  // Generate JWT
-  const token = jwt.sign(
-    {
-      site_id: id,
-      permissions: ['read:content'],
-    },
-    SUPABASE_JWT_SECRET!,
-    { expiresIn: '365d' }
-  );
+//   // Generate JWT
+//   const token = jwt.sign(
+//     {
+//       site_id: id,
+//       permissions: ['read:content'],
+//     },
+//     SUPABASE_JWT_SECRET!,
+//     { expiresIn: '365d' }
+//   );
 
-  const { data, error } = await supabase
-    .from('site_tokens')
-    .insert({ site_id: id, token })
-    .select()
-    .single();
+//   const { data, error } = await supabase
+//     .from('site_tokens')
+//     .insert({ site_id: id, token })
+//     .select()
+//     .single();
 
-  if (error) return fail(500, 'Failed to create site token', error);
+//   if (error) return fail(500, 'Failed to create site token', error);
 
-  return ok({ token: data });
-});
+//   return ok({ token: data });
+// });

@@ -45,7 +45,7 @@ export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, reques
   // 3. Create site token
   const token = jwt.sign(
     {
-      companyId: site.companyId,
+      // companyId: site.companyId,
       siteId: site.id,
       domain: site.domain,
       permissions: ['read:content'],
