@@ -138,7 +138,6 @@
 				</h2>
 
 				<div class="grid grid-cols-3 lg:grid-cols-3 gap-6">
-					<!-- 👇 new Graph API -->
 					<Graph
 						title="Visitors Over Time"
 						data={visitorsData}

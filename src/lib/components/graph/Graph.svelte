@@ -63,7 +63,7 @@
     
   </script>
   
-  <div class="bg-surface-800 rounded-xl min-w-xl shadow-sm p-5 border border-surface-700 relative">
+  <div class="bg-surface-800 rounded-xl min-w-60 shadow-sm p-5 border border-surface-700 relative">
     {#if title}
       <h3 class="text-sm font-medium text-surface-200 mb-4">{title}</h3>
     {/if}
