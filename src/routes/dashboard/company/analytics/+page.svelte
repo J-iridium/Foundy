@@ -73,7 +73,7 @@
     { label: 'Jan', value: 30 },
     { label: 'Feb', value: 40 },
     { label: 'Mar', value: 35 },
-    { label: 'Apr', value: 50 }
+    { label: 'Apr', value: 20 }
   ];
 
   const signups = [
@@ -87,7 +87,7 @@
     { label: 'Jan', value: 5 },
     { label: 'Feb', value: 15 },
     { label: 'Mar', value: 12 },
-    { label: 'Apr', value: 22 }
+    { label: 'Apr', value: 70 }
   ];
 
   const dataset = [
@@ -137,7 +137,7 @@
 					Usage Overview
 				</h2>
 
-				<div class="grid grid-cols-3 lg:grid-cols-3 gap-6">
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 					<Graph
 						title="Visitors Over Time"
 						data={visitorsData}
