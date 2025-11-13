@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { X } from '@lucide/svelte';
 	import type { ComponentType } from 'svelte';
+	import { fade, scale } from 'svelte/transition';
 	import PreviewPost from './Preview/Post.svelte';
 	import PreviewProduct from './Preview/Product.svelte';
 	import PreviewMedia from './Preview/Media.svelte';
@@ -22,10 +23,12 @@
 <div
 	class="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
 	on:click={() => onClose()}
+	transition:fade={{duration: 150}}
 >
 	<div
 		class="bg-surface-900 border border-surface-700 rounded-xl w-[90%] h-[85%] max-w-5xl overflow-hidden relative flex flex-col"
 		on:click|stopPropagation
+		transition:scale={{duration: 200, start: 0.8}}
 	>
 		<!-- Header -->
 		<div class="flex justify-between items-center p-4 border-b border-surface-700 bg-surface-800">

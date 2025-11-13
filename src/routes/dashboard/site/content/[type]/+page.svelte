@@ -9,6 +9,7 @@
 	import { store_selectedSite } from '$lib/stores/site.store';
 	import ModalEdit from './ModalEdit.svelte';
     import PageHeader from '$components/PageHeader.svelte';
+	import { fade, scale } from 'svelte/transition';
 
 	let items: any[] = [];
 	let showModal = false;
@@ -165,10 +166,12 @@
 			<div
 				class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
 				on:click={() => (showModal = false)}
+				transition:fade={{duration : 150}}
 			>
 				<div
 					class="bg-surface-900 border border-surface-700 rounded-xl p-6 w-full max-w-md shadow-lg relative"
 					on:click|stopPropagation
+					transition:scale={{duration: 200, start: 0.8}}
 				>
 					<button
 						on:click={() => (showModal = false)}
@@ -185,10 +188,12 @@
 			<div
 				class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
 				on:click={() => (showEditModal = false)}
+				transition:fade={{duration : 150}}
 			>
 				<div
 					class="bg-surface-900 border border-surface-700 rounded-xl p-6 w-full max-w-md shadow-lg relative"
 					on:click|stopPropagation
+					transition:scale={{duration: 200, start: 0.8}}
 				>
 					<button
 						on:click={() => (showEditModal = false)}
