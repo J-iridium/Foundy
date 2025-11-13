@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { fade, scale } from 'svelte/transition';
 	const dispatch = createEventDispatcher();
 	export let type: 'posts' | 'products' | 'media' = 'posts';
 
