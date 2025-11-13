@@ -235,13 +235,15 @@
     </a>
   </Navigation.Footer>
 </Navigation>
-    <!-- --- -->
-    <div class="flex flex-col m-4 rounded-lg overflow-x-hidden overflow-y-hidden">
+
+
+    <!-- CONTENT -->
+    <div class="flex flex-col m-4 rounded-lg overflow-x-hidden overflow-y-auto">
 		  {@render children()}
-      <!-- <p class="opacity-50">Contents</p> -->
     </div>
   </div>
 
+  <!-- GLOBAL TOAST -->
   <Toast.Group {toaster} position="bottom-right">
     {#snippet children(toast)}
       <Toast
