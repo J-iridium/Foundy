@@ -19,7 +19,7 @@ export class CMSClient {
 				credentials: 'include'
 			});
 			const data = await res.json().catch(() => ({}));
-			if (!res.ok) throw new Error(data.error || 'Login failed');
+			if (!res.ok) throw new Error(data.error.message || 'Login failed');
 			return data;
 		},
 
@@ -35,7 +35,7 @@ export class CMSClient {
 				credentials: 'include'
 			});
 			const data = await res.json();
-			if (!res.ok) throw new Error(data.error || 'Session fetch failed');
+			if (!res.ok) throw new Error(data.error.message || 'Session fetch failed');
 			return data.session;
 		}
 	};
@@ -49,7 +49,7 @@ export class CMSClient {
 				credentials: 'include'
 			});
 			const data = await res.json();
-			if (!res.ok) return { data: [], error: data.error };
+			if (!res.ok) return { data: [], error: data.error.message };
 			return { data: data.data, error: null };
 		},
 
@@ -61,7 +61,7 @@ export class CMSClient {
 				credentials: 'include'
 			});
 			const data = await res.json();
-			if (!res.ok) return { data: null, error: data.error };
+			if (!res.ok) return { data: null, error: data.error.message };
 			return { data: data.data, error: null };
 		},
 
@@ -71,7 +71,7 @@ export class CMSClient {
 				credentials: 'include'
 			});
 			const data = await res.json();
-			if (!res.ok) return { error: data.error };
+			if (!res.ok) return { error: data.error.message };
 			return { error: null };
 		},
 		get: async (site_id: string) => {
@@ -79,7 +79,7 @@ export class CMSClient {
 				credentials: 'include'
 			});
 			const data = await res.json();
-			if (!res.ok) return { data: null, error: data.error };
+			if (!res.ok) return { data: null, error: data.error.message };
 			return { data: data.data, error: null };
 		},
 
@@ -91,7 +91,7 @@ export class CMSClient {
 				credentials: 'include'
 			});
 			const data = await res.json();
-			if (!res.ok) return { data: null, error: data.error };
+			if (!res.ok) return { data: null, error: data.error.message };
 			return { data: data.data, error: null };
 		},
 
@@ -103,7 +103,7 @@ export class CMSClient {
 				credentials: 'include'
 			});
 			const data = await res.json();
-			if (!res.ok) return { data: null, error: data.error };
+			if (!res.ok) return { data: null, error: data.error.message };
 			return { data: data.data, error: null };
 		}
 	};
@@ -117,7 +117,7 @@ export class CMSClient {
 				credentials: 'include'
 			});
 			const data = await res.json();
-			if (!res.ok) return { data: null, error: data.error };
+			if (!res.ok) return { data: null, error: data.error.message };
 			return { data: data.data, error: null };
 		},
 
@@ -127,7 +127,7 @@ export class CMSClient {
 				credentials: 'include'
 			});
 			const data = await res.json();
-			if (!res.ok) return { data: null, error: data.error };
+			if (!res.ok) return { data: null, error: data.error.message };
 			return { data: data.data, error: null };
 		}
 	};
@@ -141,7 +141,7 @@ export class CMSClient {
 				credentials: 'include'
 			});
 			const data = await res.json();
-			if (!res.ok) return { data: [], error: data.error };
+			if (!res.ok) return { data: [], error: data.error.message };
 			return { data: data.data, error: null };
 		},
 
@@ -151,7 +151,7 @@ export class CMSClient {
 				{ credentials: 'include' }
 			);
 			const data = await res.json();
-			if (!res.ok) return { data: [], error: data.error };
+			if (!res.ok) return { data: [], error: data.error.message };
 			return { data: data.data, error: null };
 		},
 
@@ -161,7 +161,7 @@ export class CMSClient {
 				{ credentials: 'include' }
 			);
 			const data = await res.json();
-			if (!res.ok) return { data: null, error: data.error };
+			if (!res.ok) return { data: null, error: data.error.message };
 			return { data: data.data, error: null };
 		},
 
@@ -181,7 +181,7 @@ export class CMSClient {
 
 			const data = await res.json();
 
-			if (!res.ok) return { data: null, error: data.error };
+			if (!res.ok) return { data: null, error: data.error.message };
 			return { data: data.data, error: null };
 		},
 
@@ -197,7 +197,7 @@ export class CMSClient {
 			);
 		
 			const data = await res.json();
-			if (!res.ok) return { data: null, error: data.error };
+			if (!res.ok) return { data: null, error: data.error.message };
 			return { data: data.data, error: null };
 		},
 		
@@ -210,7 +210,7 @@ export class CMSClient {
 				credentials: 'include'
 			});
 			const data = await res.json();
-			if (!res.ok) return { success: false, error: data.error };
+			if (!res.ok) return { success: false, error: data.error.message };
 			return { success: true, error: null };
 		}
 		
@@ -225,7 +225,7 @@ export class CMSClient {
 				credentials: 'include'
 			});
 			const data = await res.json();
-			if (!res.ok) return { data: null, error: data.error };
+			if (!res.ok) return { data: null, error: data.error.message };
 			return { data: data.data, error: null };
 		},
 
@@ -239,7 +239,7 @@ export class CMSClient {
 				});
 	
 				const data = await res.json();
-				if (!res.ok) return { data: null, error: data.error || 'Update failed' };
+				if (!res.ok) return { data: null, error: data.error.message || 'Update failed' };
 				return { data: data.data, error: null };
 			} catch (err) {
 				return { data: null, error: err.message };
