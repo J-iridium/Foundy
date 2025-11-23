@@ -33,7 +33,4 @@ export interface AnalyticsDaily extends BaseModel {
 
   /** Bounce rate (optional) */
   bounce_rate?: number;
-
-  /** When this aggregation was last updated */
-  updated_at: string;
 }

@@ -30,7 +30,4 @@ export interface AnalyticsMonthly extends BaseModel {
 
   /** Aggregated country data, merged from daily stats */
   country_data?: Record<string, number>;
-
-  /** When this aggregation was last updated */
-  updated_at: string;
 }

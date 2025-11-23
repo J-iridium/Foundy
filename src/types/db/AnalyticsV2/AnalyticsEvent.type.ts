@@ -6,13 +6,13 @@ export interface AnalyticsEvent extends BaseModel {
   site_id: string;
 
   /** The unique visitor */
-  user_uuid?: string;
+  visitor_uuid?: string;
 
   /** Optional: related content (post, product, page, etc.) */
   content_id?: string;
 
   /** Type of event (e.g., view, click, scroll, checkout) */
-  event_type: Event;
+  event_type: string;
 
   /** Optional descriptive event name (like "add_to_cart", "video_play") */
   event_name?: string;
@@ -30,5 +30,5 @@ export interface AnalyticsEvent extends BaseModel {
   country?: string;
 
   /** Browser user agent string */
-  user_agent?: string;
+  visitor_agent?: string;
 }

@@ -1,8 +1,8 @@
 import type { BaseModel } from "../BaseModel.type";
 
-export interface UserProfile extends BaseModel {
+export interface VisitorProfile extends BaseModel {
   /** Unique identifier for this visitor (cookie or UUID) */
-  user_uuid: string;
+  visitor_uuid: string;
 
   /** The site this user belongs to */
   site_id: string;

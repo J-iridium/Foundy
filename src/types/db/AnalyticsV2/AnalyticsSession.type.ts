@@ -6,7 +6,7 @@ export interface AnalyticsSession extends BaseModel {
     site_id: string;
   
     /** Visitor UUID */
-    user_uuid: string;
+    visitor_uuid: string;
   
     /** Page path (e.g., /blog/post-title) */
     path: string;

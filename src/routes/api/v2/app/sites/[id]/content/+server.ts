@@ -42,7 +42,7 @@ export const POST = withUserAuth(async ({ auth, supabase, params, request }) => 
 		.insert([{ site_id, name, type, data, status }])
 		.select('*')
 		.single();
-	if (error) return fail(400, 'Failed to create content', error);
+	if (error) return fail(400, 'Failed to create content, Title already taken', error);
 	return ok(inserted, 201);
 });
 
@@ -66,7 +66,6 @@ export const PATCH = withUserAuth(async ({ auth, supabase, params, request }) =>
 		.single();
 
 	if (error) {
-		console.error('❌ Supabase update error:', error);
 		return fail(400, 'Failed to update content', error);
 	}
 
