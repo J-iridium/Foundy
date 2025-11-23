@@ -47,7 +47,7 @@ export function withUserAuth(handler: Handler<SessionUser>) {
   export function withSiteAuth(handler : Handler<SiteJwtClaims>) {
     return async ({ request, params}) => {
       try {
-        const auth = getSiteAuthFromRequest(request);
+        const auth : SiteJwtClaims = getSiteAuthFromRequest(request);
         const supabase = getServiceClient();
         return await handler({
           request, auth, supabase, params
