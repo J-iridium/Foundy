@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { foundy } from '$lib/foundy/foundy-sdk';
+  import { foundy } from '$lib/sdk/foundy-sdk';
 
-  let posts: any[] = [];
+  let posts: any[] | null = [];
   let error: string | null = null;
 
   // Configure SDK once at app start
