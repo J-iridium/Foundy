@@ -1,7 +1,7 @@
-import type { BaseModel } from "./BaseModel.type";
-import type { ContentType, Status } from "./Enums";
+import type { BaseModel } from "../BaseModel.type";
+import type { ContentType, Status } from "../Enums";
 
-export interface Content extends BaseModel {
+export interface Content<T> extends BaseModel {
   /** The site this content belongs to */
   siteId: string;
 
@@ -12,7 +12,7 @@ export interface Content extends BaseModel {
   type: ContentType;
 
   /** Content data stored as JSON (body, fields, metadata, etc.) */
-  data: JSON;
+  data: T;
 
   /** Current publication status (draft, published, archived, etc.) */
   status: Status;
