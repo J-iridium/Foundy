@@ -18,11 +18,10 @@ class FoundySDKClass {
   private dev : boolean = true;
   private jwtToken: string | null = null;
   private baseUrl : string = 'https://www.foundy.com/'
-  private apiUri : string = '/api/v2/public/';
+  private apiUri : string = 'api/v2/public/';
   private analyticsUriExtension: string = 'analytics/'
   private cache: Map<string, ContentItem[]> = new Map();
   private fingerprint: string | null = null;
-  // private fpPromise = import('https://openfpcdn.io/fingerprintjs/v5').then(FingerprintJS => FingerprintJS.load())
 
   /** Set SDK configuration before use */
   async configure(options: FoundySDKOptions) {
@@ -30,7 +29,7 @@ class FoundySDKClass {
     if (options.baseUrl) this.baseUrl = options.baseUrl;
     
     if (this.dev) {
-      this.baseUrl = 'http//localhost:5173/'
+      this.baseUrl = 'http://localhost:5173/'
     }
    
     await this.generateFingerprint();
@@ -42,13 +41,14 @@ class FoundySDKClass {
 
     const fp = await FingerprintJS.load();
     const result = await fp.get();
-    console.log(result)
+
     this.fingerprint = result.visitorId; // unique device ID
+
     return this.fingerprint;
   }
 
   /** Fetch content from API or cache */
-  async content(type: ContentType, name?: string): Promise<ContentItem[] | ContentItem | null> {
+  async content(type: ContentType, name?: string): Promise<ContentItem[] | ContentItem> {
     if (!this.jwtToken) throw new Error('Foundy SDK is not configured. Call foundy.configure({...}) first.');
 
     // Ensure fingerprint is generated (optional, you can send it to API)
@@ -57,10 +57,13 @@ class FoundySDKClass {
     const cacheKey = `${type}:${name || ''}`;
     if (this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey)!;
-      return name ? cached.find(c => c.data.title === name) || null : cached;
+      return name ? cached.find(c => c.data.title === name) : cached;
     }
-
-    const url = new URL(this.apiUri,this.baseUrl);
+    console.log(this.baseUrl)
+    const url = new URL(this.apiUri,this.baseUrl); 
+    url.searchParams.append('type',type);
+    if (name)
+      url.searchParams.append('name', name);
     console.log(url)
     const res = await fetch(url.toString(), {
       headers: {
@@ -75,6 +78,7 @@ class FoundySDKClass {
     }
 
     const json = await res.json();
+    console.log(json)
     const items: ContentItem[] = json.data || [];
 
     // Cache globally
