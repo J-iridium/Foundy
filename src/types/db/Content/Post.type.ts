@@ -1,4 +1,3 @@
-import type { PostData } from "./T";
-import type { Content } from "./Wrapper";
+import type { ContentOf } from "./Wrapper";
 
-export type Post = Content<ImageData>;
+export type Post = ContentOf<'post'>;

@@ -1,7 +1,8 @@
 import type { BaseModel } from "../BaseModel.type";
 import type { ContentType, Status } from "../Enums";
+import type { ContentDataFor } from "./ContentDataFor.type";
 
-export interface Content<T> extends BaseModel {
+export interface ContentOf<T extends ContentType> extends BaseModel {
   /** The site this content belongs to */
   siteId: string;
 
@@ -9,10 +10,10 @@ export interface Content<T> extends BaseModel {
   name: string;
 
   /** Type of content (e.g., page, post, product) */
-  type: ContentType;
+  type: T;
 
   /** Content data stored as JSON (body, fields, metadata, etc.) */
-  data: T;
+  data: ContentDataFor<T>;
 
   /** Current publication status (draft, published, archived, etc.) */
   status: Status;

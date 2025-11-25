@@ -1,1 +1,3 @@
-export type ContentType = "media" | "post" | "product";
+import type { ContentSchemas } from "../Content/ContentSchema.type"
+
+export type ContentType = keyof typeof ContentSchemas;

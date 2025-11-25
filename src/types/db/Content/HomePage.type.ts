@@ -1,4 +1,4 @@
 import type { HomePageData } from "./T/HomePageData.T";
-import type { Content } from "./Wrapper";
+import type { ContentOf } from "./Wrapper";
 
-export type HomePage = Content<HomePageData>;
+export type HomePage = ContentOf<'homepage'>;

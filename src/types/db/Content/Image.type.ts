@@ -1,4 +1,4 @@
 import type { ImageData } from "./T";
-import type { Content } from "./Wrapper";
+import type { ContentOf } from "./Wrapper";
 
-export type Image = Content<ImageData>;
+export type Image = ContentOf<'media'>;
