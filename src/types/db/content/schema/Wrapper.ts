@@ -1,5 +1,5 @@
-import type { BaseModel } from "../BaseModel.type";
-import type { ContentType, Status } from "../Enums";
+import type { BaseModel } from "../../BaseModel.type";
+import type { ContentType, Status } from "../../enums";
 import type { ContentDataFor } from "./ContentDataFor.type";
 
 export interface ContentOf<T extends ContentType> extends BaseModel {

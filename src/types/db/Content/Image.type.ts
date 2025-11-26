@@ -1,4 +1,4 @@
 import type { ImageData } from "./T";
-import type { ContentOf } from "./Wrapper";
+import type { ContentOf } from "./schema/Wrapper";
 
-export type Image = ContentOf<'media'>;
+export type Image = ContentOf<'image'>;

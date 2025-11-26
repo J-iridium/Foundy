@@ -1,4 +1,4 @@
-import type { HomePageData } from "./T/HomePageData.T";
-import type { ContentOf } from "./Wrapper";
+import type { HomePageData } from "./T/HomepageData.T";
+import type { ContentOf } from "./schema/Wrapper";
 
 export type HomePage = ContentOf<'homepage'>;
