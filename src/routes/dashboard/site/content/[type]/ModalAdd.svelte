@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
+	import type { ContentType } from '$types/db';
 	const dispatch = createEventDispatcher();
-	export let type: 'posts' | 'products' | 'media' = 'posts';
+	export let type: ContentType = 'post';
 
 	let title = '';
 	let excerpt = '';
@@ -32,9 +33,9 @@
 		let data: Record<string, any> = {};
 		let name = title.trim();
 
-		if (type === 'posts') {
+		if (type === 'post') {
 			data = { title, excerpt, images: base64Images.length ? base64Images : undefined };
-		} else if (type === 'products') {
+		} else if (type === 'product') {
 			data = { title, description, price: parseFloat(price || '0'), images: base64Images.length ? base64Images : undefined };
 		} else {
 			data = { title, images: base64Images.length ? base64Images : undefined };
@@ -46,7 +47,7 @@
 </script>
 
 <div class=" text-gray-900 dark:text-gray-100  rounded-lg  w-full max-w-lg">
-	<h2 class="text-lg font-semibold mb-3 capitalize">Add {type.slice(0, -1)}</h2>
+	<h2 class="text-lg font-semibold mb-3 capitalize">Add {type}</h2>
 
 	{#if type === 'posts'}
 		<input class="w-full border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-md p-2 mb-2 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Title" bind:value={title} />
