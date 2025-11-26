@@ -1,0 +1,1 @@
+export type ReferenceType = "documentation" | "external" | "internal";
