@@ -6,6 +6,7 @@
 	import { Globe, Key, RefreshCw, Save, CheckCircle2, AlertTriangle } from '@lucide/svelte';
     import PageHeader from '$components/PageHeader.svelte';
 	import { showToast } from '$lib/stores';
+    import HomePageSettings from './Components/HomePageSettings.svelte';
 
 	let site: any = null;
 	let loading = true;
@@ -132,8 +133,6 @@
 							</div>
 						</div>
 					</div>
-
-					
 				</div>
 			</div>
 
@@ -180,6 +179,7 @@
 					</div>
 				</div>
 			</div>
+			<HomePageSettings />
 		{/if}
 	</div>
 </div>
