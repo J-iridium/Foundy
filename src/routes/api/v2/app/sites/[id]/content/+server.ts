@@ -1,12 +1,13 @@
 import { withUserAuth } from '$lib/server/withAuth';
 import { ok, fail } from '$lib/server/http';
 import { HttpError } from '$lib/server/auth';
+import type { ContentOf } from '$types/db/content/schema/Wrapper';
 
 export const GET = withUserAuth(async ({ auth, supabase, params, request }) => {
 	const { id: site_id } = params;
 	const requestUrl = new URL(request.url);
 	const type = requestUrl.searchParams.get('type');
-
+	const name = requestUrl.searchParams.get('name')
 	if (!['owner', 'editor', 'viewer'].includes(auth.role))
 		throw new HttpError(403, 'Insufficient permissions');
 
@@ -16,13 +17,17 @@ export const GET = withUserAuth(async ({ auth, supabase, params, request }) => {
 		.eq('site_id', site_id)
 		.order('created_at', { ascending: false });
 
-	if (type) {
+	if (type) 
 		query = query.eq('type', type);
-	}
+	
+
+	if (name) 
+		query = query.eq('name', name);
+		query = query.select('*').single();
 
 	const { data, error } = await query;
 
-	if (error) return fail(400, 'Failed to fetch content', error);
+	if (error) return fail(400, error.message);
 	return ok(data);
 });
 
@@ -32,17 +37,20 @@ export const POST = withUserAuth(async ({ auth, supabase, params, request }) => 
 	if (!['owner', 'editor'].includes(auth.role))
 		throw new HttpError(403, 'Insufficient permissions');
 
-	const body = await request.json();
-	const { name, type, status = 'draft', data } = body;
+	const body : ContentOf<any> = await request.json();
+	const _data = body.data;
+	const _type = body.type;
+	const _name = body.name;
+	const _status = body.status; 
 
-	if (!name || !type) throw new HttpError(400, 'Missing required fields');
+	if (!body.name || !body.type) throw new HttpError(400, 'Missing required fields');
 	
 	const { data: inserted, error } = await supabase
 		.from('content')
-		.insert([{ site_id, name, type, data, status }])
+		.insert([{ site_id, name: _name, type: _type, data: _data , status: _status }])
 		.select('*')
 		.single();
-	if (error) return fail(400, 'Failed to create content, Title already taken', error);
+	if (error) return fail(400, error.message, error);
 	return ok(inserted, 201);
 });
 
@@ -53,6 +61,7 @@ export const PATCH = withUserAuth(async ({ auth, supabase, params, request }) =>
 
 	const url = new URL(request.url);
 	const name = url.searchParams.get('name'); // ?name=<id or slug>
+
 	if (!name) throw new HttpError(400, 'Missing ?name parameter');
 
 	const updates = await request.json();
