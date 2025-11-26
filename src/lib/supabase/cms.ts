@@ -1,10 +1,17 @@
+import type { ContentType } from "$types/db";
+import type { ContentOf } from "$types/db/content/schema/Wrapper";
+
 // Client-side SDK for your /api/v2/app endpoints using cookie-based JWT auth.
 export class CMSClient {
 	private base: string;
 	private version : number;
-	constructor(version = 2,base = `/api/v${version}/app`) {
+	private href : string;
+	constructor(dev = true, version = 2,base = `/api/v${version}/app`) {
 		this.version = version;
 		this.base = base;
+		this.href = "" //TODO: Put the URL here!
+		if (dev)
+			this.href = "http://localhost:5173/"
 	}
 
 	// -----------------------------------------------------------------------
@@ -155,24 +162,26 @@ export class CMSClient {
 			return { data: data.data, error: null };
 		},
 
-		get: async (site_id: string, name: string) => {
+		get: async (siteId: string, name: string, type? : ContentType) => {
+			console.log(this.base + `/sites/${siteId}/content/`)
+			const url = new URL(this.base+`/sites/${siteId}/content/`, this.href);
+			url.searchParams.append('name',name)
+			
+			if (type)
+				url.searchParams.append('type',type)
+			
 			const res = await fetch(
-				`${this.base}/sites/${site_id}/content/${encodeURIComponent(name)}`,
+				url,
 				{ credentials: 'include' }
 			);
 			const data = await res.json();
+
 			if (!res.ok) return { data: null, error: data.error.message };
 			return { data: data.data, error: null };
 		},
 
-		create: async (payload: {
-			site_id: string;
-			name: string;
-			type: string;
-			status: string;
-			data: any;
-		}) => {
-			const res = await fetch(`${this.base}/sites/${payload.site_id}/content`, {
+		create: async (payload: ContentOf<any>) => {
+			const res = await fetch(`${this.base}/sites/${payload.siteId}/content`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(payload),
@@ -229,7 +238,7 @@ export class CMSClient {
 			return { data: data.data, error: null };
 		},
 
-		update: async (payload) => {
+		update: async (payload : JSON) => {
 			try {
 				const res = await fetch(`${this.base}/companies/id`, {
 					method: 'PATCH',
@@ -265,7 +274,7 @@ export class CMSClient {
 			}
 
 			return { data: analyticsResults, error: null };
-		}
+		},
 	};
 }
 

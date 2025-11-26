@@ -10,6 +10,8 @@
 	import ModalEdit from './ModalEdit.svelte';
     import PageHeader from '$components/PageHeader.svelte';
 	import { fade, scale } from 'svelte/transition';
+    import type { ContentOf } from '$types/db/content/schema/Wrapper';
+    import type { EventDispatcher } from 'svelte';
 
 	let items: any[] = [];
 	let showModal = false;
@@ -49,14 +51,15 @@
 	// HANDLE ADD / DELETE / UPDATE
 	// -----------------------------------------------------
 	async function addItem(e : any) {
-		const payload = e.detail;
+		const payload = e.detail as ContentOf<any>;
+		console.log(e.detail)
 		const { data, error } = await CMS.Content.create({
-			site_id,
+			siteId: site_id,
 			name: payload.name,
 			type: type? type : '',
 			status: payload.status,
 			data: payload.data,
-		});
+		} as ContentOf<any>);
 		if (error) {
 			showToast('warning', 'Add Failed', error)
 			return;
