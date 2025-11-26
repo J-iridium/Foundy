@@ -1,6 +1,8 @@
-export interface ReferencesData {
+import type { ReferenceType } from "$types/db/enums/ReferenceType.type";
+
+export interface ReferenceData {
     uri: string;
     label? : string;
     accessedAt?: string; // ISO date: when you fetched/verified this reference
-    type?: "documentation" | "external" | "internal";
+    type?: ReferenceType; //no
 }
