@@ -1,6 +1,6 @@
 # 🧩 Foundy
 
-**Foundy** is a lightweight, modern SaaS platform that brings all your website content — posts, pages, media, and product catalogs — together in one place.  
+**Foundy** is a lightweight, modern SaaS platform that brings all your website content - posts, pages, media, and product catalogs - together in one place.  
 It’s built for both **creators** who just want to manage content easily, and **developers** who need API-level access to deliver that content anywhere.
 
 > “One dashboard. Infinite front-ends.”
@@ -10,13 +10,13 @@ It’s built for both **creators** who just want to manage content easily, and *
 ## 🚀 Overview
 
 Foundy simplifies how you manage and deliver digital content.  
-Whether you’re a freelancer, small business, or an agency, Foundy lets you:
+Whether you’re a freelancer, small business, or agency, Foundy lets you:
 
 - 📚 Manage **blog posts**, **pages**, and **media** from one clean dashboard.  
 - 🛍️ Handle **product catalogs** without the complexity of Shopify or WooCommerce.  
 - 🔐 Provide **developer access** to your data via secure APIs and SDKs.  
 - 🎨 White-label and brand your workspace for your agency or clients.  
-- ☁️ Host content centrally while delivering it to **any frontend** — SvelteKit, Next.js, or custom stacks.
+- ☁️ Host content centrally while delivering it to **any frontend** - SvelteKit, Next.js, WordPress, or custom stacks/frameworks.
 
 ---
 
@@ -37,16 +37,16 @@ Whether you’re a freelancer, small business, or an agency, Foundy lets you:
 ## 🧑‍💻 Tech Stack
 
 - **Frontend:** SvelteKit + Skeleton UI + Tailwind CSS + Lucide Icons
-- **Backend:** Node.js / Edge functions  
+- **Backend:** Node.js / Edge functions / CRON Jobs
 - **Database:** PostgreSQL (multi-tenant schema)  
 - **Auth:** JWT with role-based permissions  
-- **Integrations:** Stripe, Snipcart, Shopify Lite (optional)
+- **Integrations:** Stripe, Molly
 
 ---
 
 ## ⚙️ Getting Started
 
-### 🪄 Prerequisites
+### ‼ Prerequisites
 - Node.js 18+
 - npm or pnpm
 - PostgreSQL database connection
