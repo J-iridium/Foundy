@@ -1,7 +1,7 @@
-import type { ImageData } from "./ImageData.T"
+import type { base64 } from "$types/utils/base64.type";
 
 export interface FeaturedData {
     companyName : string;
-    logo : ImageData;
+    logo : base64;
     link? : string;
 }
