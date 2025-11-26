@@ -1,5 +1,5 @@
 import type { BaseModel } from "./BaseModel.type";
-import type { Permissions } from "./Enums";
+import type { Permissions } from "./enums";
 
 /** Represents an API or access token for a specific site. */
 export interface SiteToken extends BaseModel {

@@ -1,5 +1,5 @@
 import type { BaseModel } from "./BaseModel.type";
-import type { Plan } from "./Enums";
+import type { Plan } from "./enums";
 
 export interface Company extends BaseModel {
   /** Company name, e.g. "Pixel Studio" */

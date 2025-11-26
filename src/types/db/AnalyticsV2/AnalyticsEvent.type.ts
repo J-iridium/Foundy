@@ -1,5 +1,5 @@
 import type { BaseModel } from "../BaseModel.type";
-import type { Device, Event } from "../Enums";
+import type { Device, Event } from "../enums";
 
 export interface AnalyticsEvent extends BaseModel {
   /** The site where this happened */

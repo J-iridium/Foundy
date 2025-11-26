@@ -1,5 +1,5 @@
 import type { BaseModel } from "./BaseModel.type";
-import type { Role } from "./Enums";
+import type { Role } from "./enums";
 
 /** Represents a user or team member within a company. */
 export interface User extends BaseModel {
