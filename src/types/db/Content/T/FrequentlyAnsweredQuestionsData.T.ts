@@ -1,4 +1,4 @@
-export interface FrequentlyAnsweredQuestionsData {
+export interface FrequentlyansweredquestionsData {
     question : string;
     answer : string;
 }

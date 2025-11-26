@@ -1,13 +1,14 @@
 import type { FeaturedData } from "./FeaturedData.T";
-import type { FrequentlyAnsweredQuestionsData } from "./FrequentlyAnsweredQuestionsData.T";
+import type { FrequentlyansweredquestionsData } from "./FrequentlyansweredquestionsData.T";
 import type { HeroData } from "./HeroData.T";
 import type { PricingData } from "./PricingData.T";
-import type { ReferencesData } from "./ReferenceData.T";
+import type { ReferenceData } from "./ReferenceData.T";
 
-export interface HomePageData {
+
+export interface HomepageData {
     hero : HeroData;
     featured : FeaturedData[];
     pricing : PricingData[];
-    faq : FrequentlyAnsweredQuestionsData[];
-    references : ReferencesData[];
+    faq : FrequentlyansweredquestionsData[];
+    references : ReferenceData[];
 }
