@@ -1,4 +1,4 @@
-import type { Role } from '../types/db/Enums/Roles.type'
+import type { Role } from '../types/db/enums/Roles.type'
 
 const RolePermissions = {
   owner: ['create', 'edit', 'delete', 'publish', 'settings'],
