@@ -9,7 +9,8 @@
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"generate:enums" : "node scripts/generate-union-enums.cjs"
+		"generate:enums" : "node scripts/generate-union-enums.cjs",
+		"generate:modals" : "node scripts/generate-modals.cjs"
 	},
 	"devDependencies": {
 		"@skeletonlabs/skeleton": "^4.2.2",

@@ -52,7 +52,7 @@ for (const file of fs.readdirSync(TYPES_DIR)) {
 }
 
 const output =
-`// AUTO-GENERATED FILE — DO NOT EDIT
+`// AUTO-GENERATED FILE - DO NOT EDIT
 export const EnumDictionary = ${JSON.stringify(dictionary, null, 2)} as const;
 `;
 
