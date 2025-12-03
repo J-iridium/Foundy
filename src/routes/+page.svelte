@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { foundy } from "$lib/sdk/index";
+  import { foundy } from "$lib/sdk/v2/index";
 
   let hydrated = false;
 
