@@ -4,13 +4,13 @@ export const Modals = {
     "hero": {
       "title": "string",
       "subtitle": "string",
-      "image": "base64"
+      "logo": "base64"
     },
     "featured": [
       {
         "companyName": "string",
-        "logo": "base64",
-        "link": "string"
+        "link": "string",
+        "logo": "base64"
       }
     ],
     "pricing": [
