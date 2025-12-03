@@ -163,7 +163,6 @@ export class CMSClient {
 		},
 
 		get: async (siteId: string, name: string, type? : ContentType) => {
-			console.log(this.base + `/sites/${siteId}/content/`)
 			const url = new URL(this.base+`/sites/${siteId}/content/`, this.href);
 			url.searchParams.append('name',name)
 			

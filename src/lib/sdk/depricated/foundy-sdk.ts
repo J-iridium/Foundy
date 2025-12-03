@@ -59,12 +59,10 @@ class FoundySDKClass {
       const cached = this.cache.get(cacheKey)!;
       return name ? cached.find(c => c.data.title === name) : cached;
     }
-    console.log(this.baseUrl)
     const url = new URL(this.apiUri,this.baseUrl); 
     url.searchParams.append('type',type);
     if (name)
       url.searchParams.append('name', name);
-    console.log(url)
     const res = await fetch(url.toString(), {
       headers: {
         Authorization: `Bearer ${this.jwtToken}`,
@@ -78,7 +76,6 @@ class FoundySDKClass {
     }
 
     const json = await res.json();
-    console.log(json)
     const items: ContentItem[] = json.data || [];
 
     // Cache globally
