@@ -45,7 +45,6 @@ export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, params
 		)
 		.select()
 		.single();
-		console.log(updateError)
 	if (updateError) return fail(400, 'Failed to store new token', updateError);
 
 	return ok({

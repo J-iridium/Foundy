@@ -21,9 +21,11 @@ export const GET = withUserAuth(async ({ auth, supabase, params, request }) => {
 		query = query.eq('type', type);
 	
 
-	if (name) 
+	if (name)  {
 		query = query.eq('name', name);
+		// @ts-ignore
 		query = query.select('*').single();
+	}
 
 	const { data, error } = await query;
 

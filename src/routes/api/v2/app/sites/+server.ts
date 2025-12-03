@@ -21,7 +21,6 @@ export const POST: RequestHandler = withUserAuth(async ({ auth, supabase, reques
     throw new HttpError(403, 'Only owner can create a site');
 
   const body = await request.json();
-  console.log(body)
   const { domain } = body;
 
   // 1. Create site

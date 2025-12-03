@@ -52,7 +52,6 @@
 	// -----------------------------------------------------
 	async function addItem(e : any) {
 		const payload = e.detail as ContentOf<any>;
-		console.log(e.detail)
 		const { data, error } = await CMS.Content.create({
 			siteId: site_id,
 			name: payload.name,
