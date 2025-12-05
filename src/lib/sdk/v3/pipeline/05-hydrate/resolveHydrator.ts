@@ -1,2 +1,0 @@
-// Resolves how to hydrate, since sometimes you only render the text, or you want to render the whole block
-// Depending on what it chooses CSS is applied or must be made by yourself using the classes provided by the SDK.
