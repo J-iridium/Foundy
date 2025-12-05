@@ -39,3 +39,24 @@ export interface RangeFetchJob extends BaseFetchJob {
 
 // The Exported Union Type
 export type FetchJob = KeyedFetchJob | RangeFetchJob;
+
+/**
+ * The standard result object returning from the Fetch Phase.
+ * It ties the original job to the result data.
+ */
+export interface FetchResult {
+  job: FetchJob;
+  data: any | null; // The raw data returned from the API
+  success: boolean;
+  error?: Error;
+}
+
+/**
+ * Internal type for the prepared request options
+ */
+export interface RequestOptions {
+  url: string;
+  method: "GET" | "POST";
+  body?: any;
+  headers: Record<string, string>;
+}
