@@ -1,4 +1,5 @@
 import type { ContentType } from "$types/db";
+import type { HydrationMode } from "../05-hydrate/types";
 
 /**
  * A `Task` represents a single DOM element discovered during the scanning process.
@@ -18,14 +19,11 @@ export interface ScanTask {
 
   element: HTMLElement;
   parent?: HTMLElement | null;
+
+  isInViewport? : boolean;
+  domDepth? : number;
 }
 
-/**
- * The type of hydration the element expects.
- * - "html": replace the element or its innerHTML entirely
- * - "element": inject JSON data into developer-defined structure
- */
-export type HydrationMode = "html" | "element";
 
 export interface Attributes {
     name? : string,
