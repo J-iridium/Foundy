@@ -16,6 +16,7 @@ export interface ScanTask {
   type: ContentType;
   mode: HydrationMode;
   attributes: Attributes;
+  priority : number;
 
   element: HTMLElement;
   parent?: HTMLElement | null;

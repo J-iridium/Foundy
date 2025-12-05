@@ -8,3 +8,7 @@ export function extractElements(): HTMLElement[] {
 
   return Array.from(nodeList);
 }
+
+export function extractAddress(element : HTMLElement): string {
+    return element.dataset?.foundy ?? ""
+}

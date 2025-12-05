@@ -1,2 +1,9 @@
-// Binder for pipeline executing of 01-scan 
-// extracting elements -> creating task -> return task
+import { createTasks } from "./createTasks";
+import { expandRangeTasks } from "./expandRangeTasks";
+import { extractElements } from "./extractElements";
+import type { ScanTask } from "./types";
+
+export function scan() : ScanTask[] {
+    const initialTasks = createTasks(extractElements());
+    return expandRangeTasks(initialTasks);
+} 

@@ -1,50 +1,62 @@
 import type { ContentType } from "$types/db";
+import { CalendarMinus } from "@lucide/svelte";
 import type { HydrationMode } from "../05-hydrate/types";
 import type { Attributes } from "./types";
 
 /**
  * Parses the raw string syntax into a structured object.
- * Syntax format: type:name<nested>:index-count
+ * Handles nested <...<...>> chains and ensures the nested block
+ * does not become the "name".
+ *
+ * Syntax format: type:name<nested<child>>:index-count
  */
-export function normalizeAttributes(rawString: string): { attributes: Attributes, mode: HydrationMode } {
-  const attributes: Attributes = {
-    nestedContents: []
-  };
+export function normalizeAttributes(rawString: string): { attributes: Attributes, type : ContentType, mode: HydrationMode } {
+  const attributes: Attributes = { nestedContents: [] };
 
-  // Example Input: "product:shoe1<title>"  
-  // Extract Nested Content <...>
-  let cleanString : string = rawString;
-  const nestedMatch = rawString.match(/<([^>]+)>/); 
-  if (nestedMatch) {
-    attributes.nestedContents = nestedMatch[1].split("."); 
-    cleanString = rawString.replace(nestedMatch[0], ""); 
+  let cleanString = rawString.trim();
+
+  // Extract the first outer '<...>' block (including nested '<' inside)
+  const firstLeft = cleanString.indexOf("<");
+  const lastRight = cleanString.lastIndexOf(">");
+
+  if (firstLeft !== -1 && lastRight !== -1 && lastRight > firstLeft) {
+    // substring between the outermost < and the matching last >
+    const inner = cleanString.substring(firstLeft + 1, lastRight);
+
+    // inner might be "faq<a" -> split on '<' to produce ["faq", "a"]
+    attributes.nestedContents = inner.length ? inner.split("<").map(s => s.trim()).filter(Boolean) : [];
+    attributes.nestedContents[attributes.nestedContents.length -1] = attributes.nestedContents[attributes.nestedContents.length -1].split('>')[0]
+    
+    // remove the entire <...> block from the clean string
+    cleanString = (cleanString.slice(0, firstLeft) + cleanString.slice(lastRight + 1)).trim();
   }
 
-  // Extract Pagination/Index :1-10
-  const parts : string[] = cleanString.split(":");
-  const type : ContentType = parts[0] as ContentType; // "product"
-  
-  // Check for index/count at the end
-  const lastPart = parts[parts.length - 1];
-  if (lastPart.includes("-") && !isNaN(parseInt(lastPart[0]))) {
-    const [index, count] = lastPart.split("-").map(Number);
-    attributes.index = index;
-    attributes.count = count;
-    parts.pop(); // Remove index part
+  // remove trailing colons and repeated colons that might remain after removal
+  cleanString = cleanString.replace(/:+$/, "").replace(/:+/g, ":");
+
+  // Now parse the type, optional name, and optional index-count
+  const parts = cleanString.split(":").filter(Boolean); // remove empty segments
+
+  // Expect at least the type
+  const type = (parts[0] ?? "") as ContentType;
+
+  // Index/count detection on the last part
+  if (parts.length > 0) {
+    const last = parts[parts.length - 1];
+    if (/^\d+-\d+$/.test(last)) {
+      const [index, count] = last.split("-").map(Number);
+      attributes.index = index;
+      attributes.count = count;
+      parts.pop();
+    }
   }
 
-  // Extract Name
-  // If there was a name (e.g. product:shoe1), it's the second part
+  // If there's a second part left, that's the name
   if (parts.length > 1) {
     attributes.name = parts[1];
-  }
+  } 
 
-  // Determine Mode automatically
-  // If nested content exists -> User wants specific data -> "element" mode
-  // If no nested content -> User wants full component -> "html" mode
-  const mode: HydrationMode = (attributes.nestedContents?.length ?? 0) > 0 
-    ? "element" 
-    : "html";
-
-  return { attributes: { type, ...attributes }, mode };
+  // Determine mode automatically
+  const mode: HydrationMode = (attributes.nestedContents?.length ?? 0) > 0 ? "element" : "html";
+  return { attributes: {  ...attributes }, type, mode };
 }
