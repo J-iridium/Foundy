@@ -1,60 +1,80 @@
 import { withSiteAuth } from '$lib/server/withAuth';
-import type { SiteJwtClaims } from '$lib/server/auth';
-import { getServiceClient } from '$lib/supabase';
 import { json } from '@sveltejs/kit';
 
-export const GET = withSiteAuth(async ({ auth, supabase, request, params }) => {
+export const GET = withSiteAuth(async ({ auth, supabase, request }) => {
   try {
     const { siteId, domain, permissions } = auth;
-    
-    // has permission to read contents
+
+    // 1. Permission Check
     if (!permissions.includes('read:content')) {
-      return json({ error: 'Unauthorized' }, { status: 403 });
+      return json({ error: 'Unauthorized: Missing read permissions' }, { status: 403 });
     }
 
-    // Reffered domain should be the same as given inside of foundy
-    const incomming = request.headers.get('host')
-    if (!incomming?.includes(domain)) {
-        return json({error: 'Unauthorized'}, { status: 403});
+    const origin = request.headers.get('origin') || request.headers.get('referer');
+    const isDev = origin?.includes('localhost') || origin?.includes('127.0.0.1');
+    
+    // Strict check: The request must come from the actual user's site (or dev)
+    if (!isDev && !origin?.includes(domain)) {
+        return json({ error: `Unauthorized Origin: ${origin}` }, { status: 403 });
     }
 
-
-    // Optional query params: type and name
     const url = new URL(request.url);
-    const typeFilter : string = url.searchParams.get('type') as string; // posts / products / media
-    const nameFilter : string  = url.searchParams.get('name') as string; // optional name filter
-    const indexFilter : number = parseInt(url.searchParams.get('index') as string) ?? 0; // optional index filter
-    const countFilter : number = parseInt(url.searchParams.get('count') as string) > 0 ? 
-    parseInt(url.searchParams.get('count') as string) - 1 : 0; // optional index filter
+    const type = url.searchParams.get('type');
+    
+    // SDK sends: ?keys=shoe1,shoe2,shoe3
+    const namesParam = url.searchParams.get('keys'); 
+
+    
+    // SDK sends: ?start=0&end=10
+    const start = parseInt(url.searchParams.get('start') ?? '0');
+    const end = parseInt(url.searchParams.get('end') ?? '9');
+
     
     let query = supabase
       .from('content')
       .select('id, type, data, created_at')
       .eq('site_id', siteId)
-      .eq('status', 'Published')
-      .order('created_at', { ascending: false });
+      .eq('status', 'Published');
 
-    if (typeFilter) query = query.eq('type', typeFilter);
-    if (nameFilter) query = query.ilike('data->>title', `%${nameFilter}%`); // assuming title in JSON field `data`
-    if (countFilter) {
-      const startingIndex = indexFilter * countFilter;
-      const endingIndex = (indexFilter + 1) * countFilter;
-
-      query = query.range(startingIndex,endingIndex);
+    
+    if (type) {
+        query = query.eq('type', type);
     }
-    else if (indexFilter) {
-      query = query.range(indexFilter,indexFilter);
+
+    // =========================================================
+    // STRATEGY A: Keyed Fetch (Batch by Name)
+    // =========================================================
+    if (namesParam) {
+        const names = namesParam.split(',');
+        
+        // CRITICAL UPDATE: 
+        // We look inside the JSON 'data' column for the field 'name'.
+        // We use .in() to match ANY of the requested names.
+        query = query.in('data->>name', names);
+    } 
+    
+    // =========================================================
+    // STRATEGY B: Range Fetch (Pagination)
+    // =========================================================
+    else {
+        // Fetch a list (range) of items, ordered by creation
+        query = query
+            .range(start, end)
+            .order('created_at', { ascending: false });
     }
     
-    const content = await query;
-    if (content.error) {
-      console.error('Supabase fetch error:', content.error);
+    // 5. Execute
+    const { data, error } = await query;
+
+    if (error) {
+      console.error('Supabase fetch error:', error);
       return json({ error: 'Failed to load content' }, { status: 500 });
     }
 
-    return json({ data: content.data });
+    return json({ data });
+
   } catch (err: any) {
-    console.error('Public content endpoint error:', err);
+    console.error('API Error:', err);
     return json({ error: err.message || 'Internal server error' }, { status: 500 });
   }
 });

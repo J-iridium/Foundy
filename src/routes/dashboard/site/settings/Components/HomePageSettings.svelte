@@ -7,10 +7,10 @@
     // Type Imports
     import { Modals } from '$types/generated/Modals'; // Import the schema source
     import type { HomePage } from '$types/db/content';
-    import type { FrequentlyAnsweredQuestionsData } from '$types/db/content/T/FrequentlyansweredquestionsData.T';
+    import type { FrequentlyansweredquestionsData } from '$types/db/content/T/FrequentlyansweredquestionsData.T';
     import type { PricingData } from '$types/db/content/T/PricingData.T';
     import type { FeaturedData } from '$types/db/content/T/FeaturedData.T';
-    import type { ReferencesData } from '$types/db/content/T/ReferenceData.T';
+    import type { ReferenceData } from '$types/db/content/T/ReferenceData.T';
     import type { HeroData } from '$types/db/content/T/HeroData.T';
 
     // Component Import
@@ -56,26 +56,21 @@
             homepage.data.hero = newData;
         } 
         
-        // 2. Handle Array Sections (Pricing, Featured, etc.)
         else {
-            const sectionKey = modalTitleKey.toLowerCase(); // 'pricing', 'featured', 'faq'
+            const sectionKey = modalTitleKey.toLowerCase(); 
             
-            // Ensure array exists
             if (!homepage.data[sectionKey]) homepage.data[sectionKey] = [];
 
             if (editingIndex !== null && editingIndex >= 0) {
-                // Update existing item
                 homepage.data[sectionKey][editingIndex] = newData;
             } else {
-                // Add new item
                 homepage.data[sectionKey] = [...homepage.data[sectionKey], newData];
             }
         }
 
-        // Trigger Svelte reactivity manually for deep objects if needed
         homepage = { ...homepage }; 
 
-        CMS.Content.update(homepage.site_id,homepage.id!, homepage);
+        CMS.Content.update(homepage.siteId,homepage.id!, homepage);
         
         showToast('success', 'Saved', `${modalTitleKey} updated locally`);
     }

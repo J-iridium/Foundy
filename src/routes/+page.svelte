@@ -1,18 +1,24 @@
 <script>
   import { onMount } from "svelte";
-  import { SDK_V2 } from "$lib/sdk/index";
+  import { SDK_V3 } from "$lib/sdk/index";
 
   let hydrated = false;
 
   onMount(async () => {
-    await SDK_V2.configure({
-      jwtToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaXRlSWQiOiIzY2M0MGJiYy0yYjcxLTRhZGMtOTYwNC0wY2U1MjY1ZjExNmMiLCJkb21haW4iOiJsb2NhbGhvc3Q6NTE3MyIsInBlcm1pc3Npb25zIjpbInJlYWQ6Y29udGVudCJdLCJpYXQiOjE3NjMwNTA3ODQsImV4cCI6MTc5NDU4Njc4NH0.gEo8liJIL-Snf02nZZfPct0iKyhfXu96jTgPDK8z8yI",
-      baseUrl: "http://localhost:5173/",
-      autoHydrate: true,
-      dev: true
-    });
+    SDK_V3.configure({
+      apiBaseUrl: "http://localhost:5173/api/v2/public/",
+      jwtToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaXRlSWQiOiIzY2M0MGJiYy0yYjcxLTRhZGMtOTYwNC0wY2U1MjY1ZjExNmMiLCJkb21haW4iOiJsb2NhbGhvc3Q6NTE3MyIsInBlcm1pc3Npb25zIjpbInJlYWQ6Y29udGVudCJdLCJpYXQiOjE3NjMwNTA3ODQsImV4cCI6MTc5NDU4Njc4NH0.gEo8liJIL-Snf02nZZfPct0iKyhfXu96jTgPDK8z8yI"
+    })
+    SDK_V3.run();
+    
+    // await SDK_V2.configure({
+    //   jwtToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaXRlSWQiOiIzY2M0MGJiYy0yYjcxLTRhZGMtOTYwNC0wY2U1MjY1ZjExNmMiLCJkb21haW4iOiJsb2NhbGhvc3Q6NTE3MyIsInBlcm1pc3Npb25zIjpbInJlYWQ6Y29udGVudCJdLCJpYXQiOjE3NjMwNTA3ODQsImV4cCI6MTc5NDU4Njc4NH0.gEo8liJIL-Snf02nZZfPct0iKyhfXu96jTgPDK8z8yI",
+    //   baseUrl: "http://localhost:5173/",
+    //   autoHydrate: true,
+    //   dev: true
+    // });
 
-    // Once Foundy is hydrated → fade in content
+    // // Once Foundy is hydrated → fade in content
     hydrated = true;
   });
 </script>
@@ -43,7 +49,7 @@
 <!-- HERO SECTION -->
 <section
   class="hero container fade {hydrated ? 'show' : ''}"
-  data-foundy="homepage:homepage"
+  data-foundy="homepage:<faq<a>>:"
   data-priority="10">
 </section>
 

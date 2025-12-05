@@ -5,7 +5,7 @@
 		id: string;
 		site_id: string;
 		name: string;
-		type: 'posts' | 'products' | 'media';
+		type: 'post' | 'product' | 'media';
 		status: 'Draft' | 'Published' | 'Archived';
 		created_at: string;
 		updated_at: string;
@@ -18,7 +18,7 @@
 		};
 	};
 
-	export let type: 'posts' | 'products' | 'media' = 'posts';
+	export let type: 'post' | 'product' | 'media' = 'posts';
 	export let onEdit: (id: string) => void;
 	export let onDelete: (id: string) => void;
 	export let onStatusChange: (id: string, newStatus: string) => void;
