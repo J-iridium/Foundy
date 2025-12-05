@@ -1,26 +1,38 @@
-// Central binder for pipeline 02-jobs executing
-// get all tasks, calculate priority, normalize the attributes of the element.
-// construct job object and return.
+// pipeline/02-cluster/createClusters.ts
 
 import type { ScanTask } from "../01-scan/types";
-import type { FetchJob } from "../04-fetch/types";
+import type { FetchJob, KeyedFetchJob, RangeFetchJob } from "../04-fetch/types";
+import type { GroupBucket } from "./types";
 
-export function clusterTasks(ScanTask : ScanTask[]) : FetchJob[] {
-    const groups : [string, ScanTask[]] = groupByAdress(tasks);
-    const jobs : FetchJob[] = [];
+export function createClusters(buckets: GroupBucket[]): FetchJob[] {
+    return buckets.map(bucket => {
+        console.log(bucket)
+        if (bucket.isRange) {
+            const min = Math.min(...bucket.indexes);
+            const max = Math.max(...bucket.indexes);
+            return {
+                kind: "range",
+                address: bucket.address,
+                range: [min, max],
+                tasks: bucket.tasks,
+                priority: Infinity,
+                isCached: false,
+                status: "pending"
+            } as RangeFetchJob;
+        }
 
-    for (const [address, groupTasks] of Object.entries(groups)) {
-        const priority = calculateJobPriority(groupTasks);
+        const keys = bucket.tasks
+            .map(t => t.attributes.name!)
+            .filter(Boolean);
 
-        jobs.push({
+        return {
             kind: "keyed",
-            address,
-            keys: [],
-            priority: 0,
-            tasks: groupTasks,
+            address: bucket.address,
+            keys,
+            tasks: bucket.tasks,
+            priority: Infinity,
+            isCached: false,
             status: "pending"
-        })
-    }
-
-    return job
+        } as KeyedFetchJob;
+    });
 }
