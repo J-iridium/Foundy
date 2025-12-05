@@ -62,6 +62,7 @@ class CacheService {
         if (typeof window === 'undefined') return;
         try {
             const json = JSON.stringify(Array.from(this.store.entries()));
+            console.log("HELLO")
             localStorage.setItem(this.STORAGE_KEY, json);
         } catch (e) {
             console.warn("[Foundy] Cache full, could not save");

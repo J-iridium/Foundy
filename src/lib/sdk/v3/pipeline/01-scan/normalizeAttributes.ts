@@ -1,62 +1,138 @@
 import type { ContentType } from "$types/db";
-import { CalendarMinus } from "@lucide/svelte";
 import type { HydrationMode } from "../05-hydrate/types";
 import type { Attributes } from "./types";
+import { Modals } from "$types/generated/Modals";
+
+/**
+ * Follow the schema through nested keys
+ */
+function followSchema(root: any, path: string[]) {
+  let current = root;
+
+  for (const seg of path) {
+    if (current == null) return null;
+
+    // array — follow into element type
+    if (Array.isArray(current)) {
+      current = current[0];
+      continue;
+    }
+
+    current = current[seg];
+  }
+
+  return current;
+}
+
+/**
+ * Check if schema is primitive
+ */
+function isPrimitive(schema: any): boolean {
+  if (schema == null) return false;
+
+  if (typeof schema === "string") {
+    return (
+      schema === "string" ||
+      schema === "number" ||
+      schema === "boolean" ||
+      schema === "base64" ||
+      schema.startsWith("enum_") ||
+      schema.endsWith("[]")
+    );
+  }
+
+  return false;
+}
+
+/**
+ * Check if value is a component object or list
+ */
+function isComponent(schema: any): boolean {
+  if (schema == null) return false;
+
+  // object = component
+  if (typeof schema === "object") return true;
+
+  // array = component list
+  if (Array.isArray(schema)) return true;
+
+  return false;
+}
+
+/**
+ * The final mode detection: based on schema type, not nesting level.
+ */
+function determineMode(type: ContentType, nested: string[]): HydrationMode {
+  const rootSchema = Modals[type];
+  if (!rootSchema) return "html";
+
+  const schema = followSchema(rootSchema, nested);
+
+  if (isComponent(schema)) return "html";
+  if (isPrimitive(schema)) return "element";
+
+  // fallback: if unknown, assume primitive hydration
+  return "element";
+}
 
 /**
  * Parses the raw string syntax into a structured object.
- * Handles nested <...<...>> chains and ensures the nested block
- * does not become the "name".
+ * Handles nested <...<...>>.
  *
- * Syntax format: type:name<nested<child>>:index-count
+ * Example: homepage:name<faq<a>>:1-10
  */
-export function normalizeAttributes(rawString: string): { attributes: Attributes, type : ContentType, mode: HydrationMode } {
+export function normalizeAttributes(
+  rawString: string
+): { attributes: Attributes; type: ContentType; mode: HydrationMode } {
   const attributes: Attributes = { nestedContents: [] };
 
   let cleanString = rawString.trim();
 
-  // Extract the first outer '<...>' block (including nested '<' inside)
+  // Extract nested <...>
   const firstLeft = cleanString.indexOf("<");
   const lastRight = cleanString.lastIndexOf(">");
 
   if (firstLeft !== -1 && lastRight !== -1 && lastRight > firstLeft) {
-    // substring between the outermost < and the matching last >
     const inner = cleanString.substring(firstLeft + 1, lastRight);
 
-    // inner might be "faq<a" -> split on '<' to produce ["faq", "a"]
-    attributes.nestedContents = inner.length ? inner.split("<").map(s => s.trim()).filter(Boolean) : [];
-    attributes.nestedContents[attributes.nestedContents.length -1] = attributes.nestedContents[attributes.nestedContents.length -1].split('>')[0]
-    
-    // remove the entire <...> block from the clean string
-    cleanString = (cleanString.slice(0, firstLeft) + cleanString.slice(lastRight + 1)).trim();
+    // inner: "faq<a"  --> ["faq", "a"]
+    attributes.nestedContents = inner
+      .split("<")
+      .map((s) => s.replace(">", "").trim())
+      .filter(Boolean);
+
+    cleanString =
+      cleanString.slice(0, firstLeft) + cleanString.slice(lastRight + 1);
+    cleanString = cleanString.trim();
   }
 
-  // remove trailing colons and repeated colons that might remain after removal
+  // remove trailing or duplicate colons
   cleanString = cleanString.replace(/:+$/, "").replace(/:+/g, ":");
 
-  // Now parse the type, optional name, and optional index-count
-  const parts = cleanString.split(":").filter(Boolean); // remove empty segments
+  const parts = cleanString.split(":").filter(Boolean);
 
-  // Expect at least the type
   const type = (parts[0] ?? "") as ContentType;
 
-  // Index/count detection on the last part
-  if (parts.length > 0) {
-    const last = parts[parts.length - 1];
-    if (/^\d+-\d+$/.test(last)) {
-      const [index, count] = last.split("-").map(Number);
-      attributes.index = index;
-      attributes.count = count;
-      parts.pop();
-    }
+  // Index/count (x-y)
+  const last = parts[parts.length - 1];
+  if (/^\d+-\d+$/.test(last)) {
+    const [index, count] = last.split("-").map(Number);
+    attributes.index = index;
+    attributes.count = count;
+    parts.pop();
   }
 
-  // If there's a second part left, that's the name
+  // name
   if (parts.length > 1) {
     attributes.name = parts[1];
-  } 
+  }
 
-  // Determine mode automatically
-  const mode: HydrationMode = (attributes.nestedContents?.length ?? 0) > 0 ? "element" : "html";
-  return { attributes: {  ...attributes }, type, mode };
+  // Determine hydration mode using schema rules
+  const mode = determineMode(type, attributes.nestedContents ?? []);
+
+  return {
+    attributes: { ...attributes },
+    type,
+    mode,
+  };
 }

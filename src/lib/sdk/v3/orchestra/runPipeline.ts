@@ -61,5 +61,10 @@ function getDataForTask(task: ScanTask): any {
     if (fromIndex) return fromIndex;
   }
 
+  //TODO: FIX BEUN IMPLEMENTATITE
+  if (task.type === "homepage") {
+    return cacheService.get(task.type)
+  }
+
   return cacheService.get(task.address);
 }

@@ -10,6 +10,6 @@ export function cluster(allTasks: ScanTask[]): FetchJob[] {
 
     const memoryJobs = processBatch(cached, true);
     const networkJobs = processBatch(uncached, false);
-    console.log(cached)
+
     return [...memoryJobs, ...networkJobs];
 }

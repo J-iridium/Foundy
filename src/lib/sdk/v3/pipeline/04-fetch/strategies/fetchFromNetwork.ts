@@ -15,9 +15,9 @@ export async function fetchFromNetwork(
     const options = buildRequest(job, config);
     const rawResponse = await sendRequest(options, timeout);
     const data = await handleResponse(rawResponse);
-
     if (data && Array.isArray(data)) {
         const cacheInputs = normalizeForCache(data, job);
+        console.log(cacheInputs)
         if (cacheInputs.length > 0) {
             cacheService.set(cacheInputs);
         }

@@ -12,11 +12,12 @@ export function normalizeForCache(data: any[], job: FetchJob): CacheItemInput[] 
   data.forEach((item, i) => {
     const type = item.type;
     const name = item.data?.title || item.data?.name;
-    
-    if (!type || !name) return;
+    let address = `${type}:${name}` 
+    if (!type) return;
+    if (type === "homepage") {address = "homepage"}
 
     const cacheInput: CacheItemInput = {
-      address: `${type}:${name}`,
+      address: address,
       data: { ...item }, 
       type: type
     };

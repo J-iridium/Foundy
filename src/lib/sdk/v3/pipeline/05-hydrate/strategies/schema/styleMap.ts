@@ -17,6 +17,7 @@ export const StyleMap = {
   
   // Components
   badge: "foundy-badge",
+  tag: "foundy-tag",
   error: "foundy-error",
   
   // Dynamic class generator

@@ -1,7 +1,7 @@
 export function hydrateElement(element: HTMLElement, value: any): void {
   const tagName = element.tagName;
   const str = String(value ?? "");
-
+    console.log(str)
   switch (tagName) {
     case "IMG":
       if (typeof value === "object" && value.url) {

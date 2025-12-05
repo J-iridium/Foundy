@@ -9,3 +9,4 @@ export function executeStrategy(task: ScanTask, content: any): void {
     hydrateElement(task.element, content);
   }
 }
+

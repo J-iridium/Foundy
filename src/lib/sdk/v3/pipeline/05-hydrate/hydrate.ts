@@ -26,9 +26,7 @@ export function hydrate(job: HydrateJob): void {
     }
     return;
   }
-
   const content = resolveData(data, task.attributes.nestedContents);
-
   if (content === undefined) {
     if (task.attributes.index !== undefined) {
         task.element.remove();
