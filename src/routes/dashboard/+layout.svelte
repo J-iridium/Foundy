@@ -34,8 +34,8 @@
         { label: 'Settings', href: '/dashboard/site/settings', icon: SettingsIcon},
       ],
 		content: [
-      { label: 'Posts', href: '/dashboard/site/content/posts', icon: FileTextIcon },
-			{ label: 'Products', href: '/dashboard/site/content/products', icon: PackageIcon },
+      { label: 'Posts', href: '/dashboard/site/content/post', icon: FileTextIcon },
+			{ label: 'Products', href: '/dashboard/site/content/product', icon: PackageIcon },
 			{ label: 'Media', href: '/dashboard/site/content/media', icon: ImageIcon },
 		],
 	};

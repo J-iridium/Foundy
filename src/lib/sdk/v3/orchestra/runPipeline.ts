@@ -20,7 +20,7 @@ export async function runPipeline(ctx: PipelineContext) {
   ctx.fetchJobs = cluster(ctx.scanTasks);
 
   const executionPromises = ctx.fetchJobs.map(job => {
-      return executeFetch(job, ctx.config, 500);
+      return executeFetch(job, ctx.config, 5000);
   });
 
   ctx.fetchResults = await Promise.all(executionPromises);
