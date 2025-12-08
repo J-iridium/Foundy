@@ -5,6 +5,7 @@ import { hydrate, initHydration } from "../pipeline/05-hydrate/hydrate";
 import { cacheService } from "../pipeline/03-cache/cacheService";
 import type { ScanTask } from "../pipeline/01-scan/types";
 import type { PipelineContext } from "./types";
+import type { FetchResult } from "../pipeline/04-fetch/types";
 
 export async function runPipeline(ctx: PipelineContext) {
   console.time("Pipeline"); 
@@ -24,29 +25,52 @@ export async function runPipeline(ctx: PipelineContext) {
   });
 
   ctx.fetchResults = await Promise.all(executionPromises);
+  for (const execution of executionPromises) {
+    execution.then((result : FetchResult) => {
+        const job = result.job;
+        for (const task of job.tasks) {
+            if (!result.success) {
+                hydrate({ 
+                task, 
+                data: null, 
+                error: result.error 
+                });
+                continue;
+            }
 
-  for (const result of ctx.fetchResults) {
-    const job = result.job;
+            const data = getDataForTask(task);
 
-    for (const task of job.tasks) {
-      if (!result.success) {
-        hydrate({ 
-          task, 
-          data: null, 
-          error: result.error 
-        });
-        continue;
-      }
-
-      const data = getDataForTask(task);
-
-      hydrate({ 
-        task, 
-        data: data, 
-        error: data ? null : new Error("Data missing in batch") 
-      });
-    }
+            hydrate({ 
+                task, 
+                data: data, 
+                error: data ? null : new Error("Data missing in batch") 
+            });
+        }
+    }) 
   }
+
+//   for (const result of ctx.fetchResults) {
+//     const job = result.job;
+
+//     for (const task of job.tasks) {
+//       if (!result.success) {
+//         hydrate({ 
+//           task, 
+//           data: null, 
+//           error: result.error 
+//         });
+//         continue;
+//       }
+
+//       const data = getDataForTask(task);
+
+//       hydrate({ 
+//         task, 
+//         data: data, 
+//         error: data ? null : new Error("Data missing in batch") 
+//       });
+//     }
+//   }
   console.timeEnd("Pipeline");
   console.log(`[Foundy] Hydrated ${ctx.scanTasks.length} elements.`);
   console.log(ctx)
