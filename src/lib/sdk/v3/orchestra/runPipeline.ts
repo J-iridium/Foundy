@@ -24,7 +24,7 @@ export async function runPipeline(ctx: PipelineContext) {
       return executeFetch(job, ctx.config, 5000);
   });
 
-  ctx.fetchResults = await Promise.all(executionPromises);
+//   ctx.fetchResults = await Promise.all(executionPromises);
   for (const execution of executionPromises) {
     execution.then((result : FetchResult) => {
         const job = result.job;
