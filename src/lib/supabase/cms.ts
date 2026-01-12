@@ -180,7 +180,8 @@ export class CMSClient {
 		},
 
 		create: async (payload: ContentOf<any>) => {
-			const res = await fetch(`${this.base}/sites/${payload.siteId}/content`, {
+			const url = `${this.base}/sites/${payload.siteId}/content`
+			const res = await fetch(url, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(payload),
