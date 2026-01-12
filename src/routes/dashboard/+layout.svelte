@@ -23,15 +23,15 @@
     
     const companyLinkSidebar = {
       company: [
-        { label: 'Analytics', href: '/dashboard/company/analytics', icon: BarChart3 },
         { label: 'Settings', href: '/dashboard/company/settings', icon: SettingsIcon},
+        // { label: 'Analytics', href: '/dashboard/company/analytics', icon: BarChart3 },
         { label: 'Sites', href: '/dashboard/company/sites', icon: GlobeIcon}
       ],
     }
     const linksSidebar = {
       dashboard: [
-        { label: 'Analytics', href: '/dashboard/site/analytics', icon: BarChart3 },
         { label: 'Settings', href: '/dashboard/site/settings', icon: SettingsIcon},
+        // { label: 'Analytics', href: '/dashboard/site/analytics', icon: BarChart3 },
       ],
 		content: [
       { label: 'Posts', href: '/dashboard/site/content/post', icon: FileTextIcon },
