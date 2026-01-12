@@ -52,10 +52,14 @@
         const newData = e.detail.data;
 
         // 1. Handle Single Object Sections (Hero, Logo)
-        if (modalTitleKey === 'Hero') {
+
+        // switch (modalTitleKey) {
+        //     case "Hero"
+        // }
+
+        if (modalTitleKey === 'hero') {
             homepage.data.hero = newData;
         } 
-        
         else {
             const sectionKey = modalTitleKey.toLowerCase(); 
             
@@ -68,10 +72,17 @@
             }
         }
 
-        homepage = { ...homepage }; 
-
-        CMS.Content.update(homepage.siteId,homepage.id!, homepage);
+        // homepage = { ...homepage }; 
         
+        const { data , error } = CMS.Content.update(homepage.site_id,homepage.id!, homepage);
+        
+        if (error) {
+            showToast('error', 'Saved', `${modalTitleKey} updated locally`);
+            return;
+        }
+
+        console.log(data)
+
         showToast('success', 'Saved', `${modalTitleKey} updated locally`);
     }
 
@@ -80,7 +91,7 @@
 
     function editHero(hero: HeroData) {
         // Pass the Hero schema and current data
-        openModal('Hero', Modals.homepage.hero, hero);
+        openModal('hero', Modals.homepage.hero, hero);
     }
 
     // --- FEATURED ---
