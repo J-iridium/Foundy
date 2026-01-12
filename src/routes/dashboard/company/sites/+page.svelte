@@ -16,7 +16,9 @@
 		Building2
 	} from '@lucide/svelte';
     import type { Plan } from '$types/db';
-
+	import type { HomepageData } from '$types/db/content/T';
+    import HomePageSettings from '$routes/dashboard/site/settings/Components/HomePageSettings.svelte';
+    import type { ContentOf } from '$types/db/content/schema/Wrapper';
 	type Site = {
 		id: string;
 		domain?: string;
@@ -46,7 +48,7 @@
 		// @ts-ignore
 		if (sortOption === 'za') return (b.domain || '').localeCompare(a.domain || '');
 		// @ts-ignore
-		if (sortOption === 'newest') return new Date(a.created_at || '').getTime() - new Date(b.created_at || '').getTime();
+		if (sortOption === 'oldest') return new Date(a.created_at || '').getTime() - new Date(b.created_at || '').getTime();
 		// default oldest
 		return new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime();
 	});
@@ -72,11 +74,40 @@
 
 	async function addSite() {
 		if (!newDomain.trim()) return;
-		const { error } = await CMS.Sites.create({ domain: newDomain });
+		const { data, error } = await CMS.Sites.create({ domain: newDomain });
 		if (error) {
 			showToast('warning', 'Error creating sites', error.message)
 			return;
 		}
+		console.log(data)
+		const { error : error_content } = await CMS.Content.create({
+                siteId: data.site.id,
+                name: "homepage",
+                type: "homepage",
+                status: 'Published', // Default status for new items
+                data: {
+  "faq": [
+  ],
+  "hero": {
+    "logo": "",
+    "image": "",
+    "title": "",
+    "subtitle": ""
+  },
+  "pricing": [
+  ],
+  "featured": [
+  ],
+  "references": [
+  ]
+},
+                updatedAt: ''
+            })
+		if (error_content) {
+			showToast('warning', 'Error creating content', error_content)
+			return;
+		}
+
 		fetchSites();
 		newDomain = '';
 		showModal = false;
