@@ -21,7 +21,8 @@ export async function runPipeline(ctx: PipelineContext) {
   ctx.fetchJobs = cluster(ctx.scanTasks);
 
   const executionPromises = ctx.fetchJobs.map(job => {
-      return executeFetch(job, ctx.config, 5000);
+    console.time(job.address)
+    return executeFetch(job, ctx.config, 5000);
   });
 
 //   ctx.fetchResults = await Promise.all(executionPromises);
@@ -45,34 +46,12 @@ export async function runPipeline(ctx: PipelineContext) {
                 data: data, 
                 error: data ? null : new Error("Data missing in batch") 
             });
+            console.timeEnd(job.address)
         }
     }) 
   }
 
-//   for (const result of ctx.fetchResults) {
-//     const job = result.job;
-
-//     for (const task of job.tasks) {
-//       if (!result.success) {
-//         hydrate({ 
-//           task, 
-//           data: null, 
-//           error: result.error 
-//         });
-//         continue;
-//       }
-
-//       const data = getDataForTask(task);
-
-//       hydrate({ 
-//         task, 
-//         data: data, 
-//         error: data ? null : new Error("Data missing in batch") 
-//       });
-//     }
-//   }
   console.timeEnd("Pipeline");
-  console.log(`[Foundy] Hydrated ${ctx.scanTasks.length} elements.`);
   console.log(ctx)
 }
 
