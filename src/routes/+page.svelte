@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { SDK_V3 } from "$lib/sdk/index";
-    import type { PipelineConfig } from "$lib/sdk/v3/orchestra/types";
+  import { SDK_V3 } from "../lib/sdk/index";
+    import type { PipelineConfig } from "../lib/sdk/v3/orchestra/types";
 
   let hydrated = false;
   const config_dev : PipelineConfig = {

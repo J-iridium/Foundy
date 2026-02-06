@@ -2,8 +2,8 @@
 //@ts-ignore
 import jwt from 'jsonwebtoken';
 import { SUPABASE_JWT_SECRET } from '$env/static/private';
-import { getServiceClient } from '$lib/supabase';
-import { ok, fail } from '$lib/server/http';
+import { getServiceClient } from '../../../../../../lib-depricated/supabase';
+import { ok, fail } from '../../../../../../lib-depricated/server/http';
 import { serialize } from 'cookie';
 import type { SessionUser } from '$types/tokens/SessionUser.type.js';
 // import bcrypt from 'bcrypt';

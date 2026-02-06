@@ -1,5 +1,5 @@
-import { withSiteAuth } from '$lib/server/withAuth';
-import { ok, fail } from '$lib/server/http';
+import { withSiteAuth } from '../../../../../lib-depricated/server/withAuth';
+import { ok, fail } from '../../../../../lib-depricated/server/http';
 import type { RequestHandler } from './$types';
 import type { VisitorProfile } from '$types/db/AnalyticsV2/VisitorProfile.type';
 

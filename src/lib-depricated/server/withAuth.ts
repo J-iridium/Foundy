@@ -1,7 +1,7 @@
 // src/lib/server/withAuth.ts
 // @ts-ignore
 import jwt from "jsonwebtoken"
-import { getServiceClient } from '$lib/supabase';
+import { getServiceClient } from '../supabase';
 import { getSiteAuthFromRequest, type SiteJwtClaims, HttpError } from './auth';
 import type { SessionUser } from "$types/tokens";
 import { errorToResponse } from './http';

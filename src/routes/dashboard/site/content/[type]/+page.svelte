@@ -1,16 +1,16 @@
 <script lang="ts">
     import { page } from '$app/stores';
-    import { CMS } from '$lib/supabase/cms';
+    import { CMS } from '../../../../../lib/supabase/cms';
     import Card from './Card.svelte';
     import { PlusCircle, Package } from '@lucide/svelte'; // Removed X, not needed here anymore
-    import { showToast } from '$lib/stores';
+    import { showToast } from '../../../../../lib/stores';
     import ModalPreview from './ModalPreview.svelte';
-    import { store_selectedSite } from '$lib/stores/site.store';
-    import PageHeader from '$components/PageHeader.svelte';
+    import { store_selectedSite } from '../../../../../lib/stores/site.store';
+    import PageHeader from '../../../../../lib/components/PageHeader.svelte';
     
     // --- Dynamic System Imports ---
     import { Modals } from '$types/generated/Modals';
-    import AddEditModal from '$lib/components/modal/AddEditModal.svelte';
+    import AddEditModal from '../../../../../lib/components/modal/AddEditModal.svelte';
 
     let items: any[] = [];
     let previewItem: any = null;

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { CMS } from '$lib/supabase/cms';
+	import { CMS } from '../../../../lib/supabase/cms';
 	import { Save, Building2, Layers, ArrowUpRight, UploadIcon, ImageIcon } from '@lucide/svelte';
-	import { showToast } from '$lib/stores';
-    import PageHeader from '$components/PageHeader.svelte';
+	import { showToast } from '../../../../lib/stores';
+    import PageHeader from '../../../../lib/components/PageHeader.svelte';
 	
     
     const max_pages  = {

@@ -1,4 +1,4 @@
-import { withSiteAuth } from '$lib/server/withAuth';
+import { withSiteAuth } from '../../../../lib-depricated/server/withAuth';
 import { json } from '@sveltejs/kit';
 
 export const GET = withSiteAuth(async ({ auth, supabase, request }) => {

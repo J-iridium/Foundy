@@ -1,12 +1,12 @@
 <script lang="ts">
 	  import favicon from '$lib/assets/favicon.svg';
     import { Navigation } from '@skeletonlabs/skeleton-svelte';
-    import { CMS } from '$lib/supabase/cms';
-    import { store_selectedSite } from '$lib/stores/site.store';
+    import { CMS } from '../../lib/supabase/cms';
+    import { store_selectedSite } from '../../lib/stores/site.store';
     import { page } from '$app/stores';
     import { Toast } from '@skeletonlabs/skeleton-svelte';
-    import { store_toast } from '$lib/stores';
-    import { can } from '$lib/permissions'; // or wherever your can() function lives
+    import { store_toast } from '../../lib/stores';
+    import { can } from '../../lib/permissions'; // or wherever your can() function lives
 
     import {
       BarChart3,

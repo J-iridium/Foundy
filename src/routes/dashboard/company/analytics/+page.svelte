@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Card from '$lib/components/StatsCard.svelte';
-	import Graph from '$lib/components/graph/Graph.svelte';
-	import LineRenderer from '$lib/components/graph/renderers/LineRenderer.svelte';
-	import BarRenderer from '$lib/components/graph/renderers/BarRenderer.svelte';
-	import MultiLineRenderer from '$components/graph/renderers/MultiLineRenderer.svelte';
-	import { CMS } from '$lib/supabase/cms';
+	import Card from '../../../../lib/components/StatsCard.svelte';
+	import Graph from '../../../../lib/components/graph/Graph.svelte';
+	import LineRenderer from '../../../../lib/components/graph/renderers/LineRenderer.svelte';
+	import BarRenderer from '../../../../lib/components/graph/renderers/BarRenderer.svelte';
+	import MultiLineRenderer from '../../../../lib/components/graph/renderers/MultiLineRenderer.svelte';
+	import { CMS } from '../../../../lib/supabase/cms';
 	import { Building2 } from '@lucide/svelte';
-	import PageHeader from '$components/PageHeader.svelte';
-	import { showToast } from '$lib/stores';
+	import PageHeader from '../../../../lib/components/PageHeader.svelte';
+	import { showToast } from '../../../../lib/stores';
 	import type { Analytics } from '../../../../types/db';
 
 	let analytics: Analytics[] = [];

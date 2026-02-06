@@ -1,6 +1,6 @@
-import { withUserAuth } from '$lib/server/withAuth';
-import { ok, fail } from '$lib/server/http';
-import { HttpError } from '$lib/server/auth';
+import { withUserAuth } from '../../../../../../../../lib-depricated/server/withAuth';
+import { ok, fail } from '../../../../../../../../lib-depricated/server/http';
+import { HttpError } from '../../../../../../../../lib-depricated/server/auth';
 import jwt from 'jsonwebtoken';
 import { SUPABASE_JWT_SECRET } from '$env/static/private';
 import type { RequestHandler } from './$types';

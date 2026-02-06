@@ -1,8 +1,8 @@
 <script lang="ts">
-	import PageHeader from '$components/PageHeader.svelte';
+	import PageHeader from '../../../../lib/components/PageHeader.svelte';
 	import { onMount } from 'svelte';
-	import { CMS } from '$lib/supabase/cms';
-	import { showToast } from '$lib/stores';
+	import { CMS } from '../../../../lib/supabase/cms';
+	import { showToast } from '../../../../lib/stores';
 	import type { Sorting } from '$types/app';
 	import { fade, scale } from 'svelte/transition';
 	import {

@@ -1,8 +1,8 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { store_selectedSite } from '$lib/stores/site.store';
-    import { CMS } from '$lib/supabase/cms';
-    import { showToast } from '$lib/stores';
+    import { store_selectedSite } from '../../../../../lib/stores/site.store';
+    import { CMS } from '../../../../../lib/supabase/cms';
+    import { showToast } from '../../../../../lib/stores';
     
     // Type Imports
     import { Modals } from '$types/generated/Modals'; // Import the schema source
@@ -14,7 +14,7 @@
     import type { HeroData } from '$types/db/content/T/HeroData.T';
 
     // Component Import
-    import AddEditModal from '$lib/components/modal/AddEditModal.svelte';
+    import AddEditModal from '../../../../../lib/components/modal/AddEditModal.svelte';
 
     // Homepage data object
     let homepage: HomePage = { data: {} } as HomePage;

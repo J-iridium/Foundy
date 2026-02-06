@@ -1,6 +1,6 @@
-import { withUserAuth } from '$lib/server/withAuth';
-import { ok, fail } from '$lib/server/http';
-import { HttpError } from '$lib/server/auth';
+import { withUserAuth } from '../../../../../../../lib-depricated/server/withAuth';
+import { ok, fail } from '../../../../../../../lib-depricated/server/http';
+import { HttpError } from '../../../../../../../lib-depricated/server/auth';
 import type { ContentOf } from '$types/db/content/schema/Wrapper';
 
 export const GET = withUserAuth(async ({ auth, supabase, params, request }) => {
