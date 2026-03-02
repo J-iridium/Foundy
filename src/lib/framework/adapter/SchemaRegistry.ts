@@ -10,4 +10,11 @@ class SchemaRegistry {
         return {}
     }
 
+    getAdapterSchema(adapterName: string) : TableDefinition[] {
+        return []
+    }
+
+    listTables() : string[] {
+        return []
+    }
 }
