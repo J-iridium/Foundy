@@ -1,4 +1,4 @@
-import { AdapterSchema } from "./AdapterSchema";
+import type { AdapterSchema } from "./AdapterSchema";
 
 export interface IAdapter {
     // Identity 
