@@ -40,6 +40,7 @@ interface ServiceEntry {
 // ── BusService ────────────────────────────────────────────────────────────────
 
 export class BusService {
+    private name : string = 'BusService'
     private registry : Map<string, ServiceEntry> = new Map<string, ServiceEntry>();
     private booted : boolean = false;
 
@@ -51,13 +52,13 @@ export class BusService {
     register(service: IService, options: RegisterOptions): this {
         if (this.booted) {
             throw new Error(
-                `[BusService] Cannot register "${service.name}" after boot() has been called.`
+                `[${this.name}] Cannot register "${service.name}" after boot() has been called.`
             );
         }
 
         if (this.registry.has(service.name)) {
             throw new Error(
-                `[BusService] SERVICE_DUPLICATE - "${service.name}" is already registered.`
+                `[${this.name}] SERVICE_DUPLICATE - "${service.name}" is already registered.`
             );
         }
 
@@ -100,14 +101,14 @@ export class BusService {
 
         if (!entry) {
             throw new Error(
-                `[BusService] SERVICE_NOT_FOUND - "${name}" is not registered. ` + 
+                `[${this.name}] SERVICE_NOT_FOUND - "${name}" is not registered. ` + 
                 `Did you register it in bootstrap.ts?`
             );
         }
 
         if (entry.state !== 'active') {
             throw new Error(
-                `[BusService] SERVICE_IDLE — "${name}" is not currently active ` +
+                `[${this.name}] SERVICE_IDLE — "${name}" is not currently active ` +
                 `(state: ${entry.state}). Use await bus.activate("${name}") instead.`
             );
         }
@@ -129,7 +130,7 @@ export class BusService {
 
         if (!entry) {
             throw new Error(
-                `[BusService] SERVICE_NOT_FOUND - "${name}" is not registered.`
+                `[${this.name}] SERVICE_NOT_FOUND - "${name}" is not registered.`
             );
         }
 
@@ -158,13 +159,13 @@ export class BusService {
 
         if (!entry) {
             throw new Error(
-                `[BusService] SERVICE_NOT_FOUND - "${name}" is not registered.`
+                `[${this.name}] SERVICE_NOT_FOUND - "${name}" is not registered.`
             );
         }
 
         if (entry.options.runtime === 'always') {
             throw new Error(
-                `[BusService] SERVICE_PROTECTED - "${name}" has runtime 'always' ` +
+                `[${this.name}] SERVICE_PROTECTED - "${name}" has runtime 'always' ` +
                 `and cannot be manually deactivated.`
             );
         }
@@ -230,7 +231,7 @@ export class BusService {
             if (!healthy) {
                 entry.state = 'error';
                 throw new Error(
-                    `[BusService] SERVICE_UNHEALTHY - "${entry.service.name}" failed health check after init().`
+                    `[${this.name}] SERVICE_UNHEALTHY - "${entry.service.name}" failed health check after init().`
                 );
             }
 
@@ -291,7 +292,7 @@ export class BusService {
             for (const dep of requires) {
                 if (!this.registry.has(dep)) {
                     throw new Error(
-                        `[BusService] ADAPTER_MISSING_DEPENDENCY -  "${entry.service.name}" requires ` +
+                        `[${this.name}] ADAPTER_MISSING_DEPENDENCY -  "${entry.service.name}" requires ` +
                         `"${dep}" which is not registered. Please register "${dep}" first in bootstrap.ts.`
                     )
                 }
@@ -303,11 +304,11 @@ export class BusService {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 const entry = this.registry.get(name);
-                if (!entry) return reject(new Error(`[BusService] SERVICE_NOT_FOUND — "${name}"`));
+                if (!entry) return reject(new Error(`[${this.name}] SERVICE_NOT_FOUND — "${name}"`));
 
                 if (entry.state === 'active')     return resolve(entry.service as T);
-                if (entry.state === 'error')      return reject(new Error(`[BusService] SERVICE_ERROR — "${name}" failed to activate`));
-                if (attempts > 50)                return reject(new Error(`[BusService] SERVICE_TIMEOUT — "${name}" took too long to activate`));
+                if (entry.state === 'error')      return reject(new Error(`[${this.name}] SERVICE_ERROR — "${name}" failed to activate`));
+                if (attempts > 50)                return reject(new Error(`[${this.name}] SERVICE_TIMEOUT — "${name}" took too long to activate`));
 
                 this.waitForActive<T>(name, attempts + 1).then(resolve).catch(reject);
             }, 100)
@@ -325,7 +326,7 @@ export class BusService {
     private log(service: IService | null, event: string, message: string): void {
         const timestamp = new Date().toISOString();
         const tags      = service ? `[${service.tags.join('] [')}]` : '[bus]';
-        const name      = service ? service.name : 'BusService';
+        const name      = service ? service.name : this.name;
         const pad       = event.padEnd(12);
 
         console.log(`${timestamp}  ${tags.padEnd(28)}  ${pad}  ${name}  ${message}`);
